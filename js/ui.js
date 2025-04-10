@@ -234,7 +234,8 @@ const GUEST_LOGIN_DURATION = 24 * 60 * 60 * 1000; // 24小时（毫秒）
 function initSettings() {
     const guestLogin = JSON.parse(localStorage.getItem('guestLogin'));
     const currentTime = Date.now();
-
+    const logoutBtn = document.getElementById('logoutBtn');
+    
     if (guestLogin && (currentTime - guestLogin.timestamp) < GUEST_LOGIN_DURATION) {
         // Guest 已登录且未过期
         document.getElementById('apiSourceContainer').classList.add('hidden');
@@ -243,6 +244,7 @@ function initSettings() {
         document.getElementById('adFilterSwitch').classList.remove('hidden');
         document.getElementById('keyVerification').classList.add('hidden');
         document.getElementById('userStatus').textContent = "用户: Guest";
+        logoutBtn.classList.remove('hidden');
     } else {
         // Guest 未登录或过期
         localStorage.removeItem('guestLogin');
@@ -252,6 +254,7 @@ function initSettings() {
         document.getElementById('adFilterSwitch').classList.add('hidden');
         document.getElementById('keyVerification').classList.remove('hidden');
         document.getElementById('userStatus').textContent = "用户: Guest";
+        logoutBtn.classList.add('hidden');
     }
 }
 
@@ -265,6 +268,7 @@ function verifyKey() {
         document.getElementById('adFilterSwitch').classList.remove('hidden');
         document.getElementById('yellowFilterContainer').classList.remove('hidden');
         document.getElementById('keyVerification').classList.add('hidden');
+        document.getElementById('logoutBtn').classList.remove('hidden');
         showToast('Guest 验证成功', 'success');
     } else {
         showToast('密钥错误', 'error');
@@ -290,10 +294,11 @@ function verifyVipLogin() {
     const password = document.getElementById('vipPassword').value;
 
     if (username === VIP_CREDENTIALS.username && password === VIP_CREDENTIALS.password) {
-        // VIP 登录成功
+        // VIP 登录成功        
         document.getElementById('yellowFilterSwitch').classList.remove('hidden');
         document.getElementById('vipLogin').classList.add('hidden');
         document.getElementById('userStatus').textContent = "用户: VIP";
+        document.getElementById('logoutBtn').classList.remove('hidden');
         closeVipModal();
         showToast('VIP 登录成功', 'success');
     } else if (username === SVIP_CREDENTIALS.username && password === SVIP_CREDENTIALS.password) {
@@ -302,14 +307,31 @@ function verifyVipLogin() {
         document.getElementById('vipLogin').classList.add('hidden');
         document.getElementById('apiSourceContainer').classList.remove('hidden');
         document.getElementById('userStatus').textContent = "用户: SVIP";
+        document.getElementById('logoutBtn').classList.remove('hidden');
         closeVipModal();
         showToast('SVIP 登录成功', 'success');
     } else {
         showToast('用户名或密码错误', 'error');
     }
-    keyInput.value = ''; // 清空输入框
+// 清空 VIP/SVIP 输入框
+    document.getElementById('vipUsername').value = '';
+    document.getElementById('vipPassword').value = '';
 
 }
+
+// 退出登录
+function logout() {
+    localStorage.removeItem('guestLogin');
+    document.getElementById('apiSourceContainer').classList.add('hidden');
+    document.getElementById('yellowFilterContainer').classList.add('hidden');
+    document.getElementById('yellowFilterSwitch').classList.add('hidden');
+    document.getElementById('adFilterSwitch').classList.add('hidden');
+    document.getElementById('keyVerification').classList.remove('hidden');
+    document.getElementById('userStatus').textContent = "用户: Guest";
+    document.getElementById('logoutBtn').classList.add('hidden');
+    showToast('已退出登录', 'success');
+}
+
 
 // 页面加载时初始化
 document.addEventListener('DOMContentLoaded', () => {
@@ -317,10 +339,10 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('keyInput').addEventListener('keypress', function(event) {
         if (event.key === 'Enter') verifyKey();
     });
-    document.getElementById('vipLogin').addEventListener('click', showVipModal);
     document.getElementById('vipPassword').addEventListener('keypress', function(event) {
         if (event.key === 'Enter') verifyVipLogin();
     });
+    document.getElementById('logoutBtn').addEventListener('click', logout);
 });
 
 // 其他函数
