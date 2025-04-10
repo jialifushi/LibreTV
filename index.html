@@ -43,16 +43,16 @@
         </button>
     </div>
 
-    <!-- 设置面板 -->
+<!-- 设置面板 -->
     <div id="settingsPanel" class="settings-panel fixed right-0 top-0 h-full w-80 bg-[#111] border-l border-[#333] p-6 z-40" aria-label="设置面板" aria-hidden="true">
         <div class="flex justify-between items-center mb-6">
-            <h3 class="text-xl font-bold gradient-text">设置</h3>
+            <h3 class="text-xl font-bold gradient-text">设置 <span id="userStatus" class="text-sm text-gray-400">用户: Guest</span></h3>
             <button onclick="toggleSettings()" class="text-gray-400 hover:text-white" aria-label="关闭设置">×</button>
         </div>
         <div class="space-y-4">
             <!-- 密钥验证区域 -->
             <div id="keyVerification">
-                <label class="block text-sm font-medium text-gray-400 mb-2">输入密钥以解锁自定义选项</label>
+                <label class="block text-sm font-medium text-gray-400 mb-2">输入密钥以解锁功能</label>
                 <input 
                     type="password" 
                     id="keyInput" 
@@ -64,9 +64,9 @@
                 </button>
             </div>
 
-            <!-- 选择采集站点（默认隐藏） -->
+            <!-- 选择采集站点 (SVIP) -->
             <div id="apiSourceContainer" class="hidden">
-                <label class="block text-sm font-medium text-gray-400 mb-2">选择采集站点</label>
+                <label class="block text-sm font-medium text-gray-400 mb-2">选择采集站点 (SVIP)</label>
                 <select id="apiSource" class="w-full bg-[#222] border border-[#333] text-white px-3 py-2 rounded-lg focus:outline-none focus:border-white transition-colors">
                     <option value="aggregated">聚合搜索 (所有源)</option>
                     <option value="heimuer" selected>黑木耳影视 (heimuer)</option>
@@ -82,35 +82,25 @@
                 </select>
             </div>
 
-            <!-- 自定义接口输入框（默认隐藏） -->
-            <div id="customApiInput" class="hidden">
-                <label class="block text-sm font-medium text-gray-400 mb-2">自定义接口地址(可添加多个，用逗号分隔)</label>
-                <input 
-                    type="text" 
-                    id="customApiUrl" 
-                    class="w-full bg-[#222] border border-[#333] text-white px-3 py-2 rounded-lg focus:outline-none focus:border-white transition-colors"
-                    placeholder="https://example1.com,https://example2.com..."
-                >
-                <p class="text-xs text-gray-500 mt-1">格式: https://example1.com,https://example2.com (不含最后的斜杠)</p>
-            </div>
-
-            <!-- 其他设置项 -->
-            <div>
+            <!-- 黄色内容过滤 (VIP) -->
+            <div id="yellowFilterContainer" class="hidden">
                 <div class="flex items-center justify-between">
-                    <label class="text-sm font-medium text-gray-400">黄色内容过滤</label>
-                    <div class="relative inline-block w-12 align-middle select-none">
-                        <input type="checkbox" id="yellowFilterToggle" class="opacity-0 absolute w-full h-full cursor-pointer z-10">
+                    <label class="text-sm font-medium text-gray-400">黄色内容过滤 (VIP)</label>
+                    <div id="yellowFilterSwitch" class="relative inline-block w-12 align-middle select-none hidden">
+                        <input type="checkbox" id="yellowFilterToggle" class="opacity-0 absolute w-full h-full cursor-pointer z-10" checked>
                         <div class="toggle-bg bg-[#333] w-12 h-6 rounded-full transition-colors duration-300 ease-in-out"></div>
                         <div class="toggle-dot absolute w-5 h-5 bg-white rounded-full top-0.5 left-0.5 transition-transform duration-300 ease-in-out"></div>
                     </div>
+                    <span id="vipLogin" class="text-sm text-blue-400 cursor-pointer">VIP未登录</span>
                 </div>
                 <p class="text-xs text-gray-500 mt-1">过滤分类包含"伦理片"、"色情片"等成人内容</p>
             </div>
 
+            <!-- 分片广告过滤 (Guest) -->
             <div>
                 <div class="flex items-center justify-between">
-                    <label class="text-sm font-medium text-gray-400">分片广告过滤</label>
-                    <div class="relative inline-block w-12 align-middle select-none">
+                    <label class="text-sm font-medium text-gray-400">分片广告过滤 (Guest)</label>
+                    <div id="adFilterSwitch" class="relative inline-block w-12 align-middle select-none hidden">
                         <input type="checkbox" id="adFilterToggle" class="opacity-0 absolute w-full h-full cursor-pointer z-10">
                         <div class="toggle-bg bg-[#333] w-12 h-6 rounded-full transition-colors duration-300 ease-in-out"></div>
                         <div class="toggle-dot absolute w-5 h-5 bg-white rounded-full top-0.5 left-0.5 transition-transform duration-300 ease-in-out"></div>
@@ -118,13 +108,23 @@
                 </div>
                 <p class="text-xs text-gray-500 mt-1">关闭可减少旧版浏览器播放卡顿问题</p>
             </div>
-
             <div class="mt-4">
                 <p class="text-xs text-gray-500">当前站点代码：
                     <span id="currentCode" class="text-white"></span>
                     <span id="siteStatus" class="ml-2"></span>
                 </p>
             </div>
+        </div>
+    </div>
+
+    <!-- VIP/SVIP 登录模态框 -->
+    <div id="vipModal" class="fixed inset-0 bg-black/80 hidden flex items-center justify-center z-50">
+        <div class="bg-[#111] p-6 rounded-lg border border-[#333] w-96">
+            <h3 class="text-xl font-bold gradient-text mb-4">VIP/SVIP 登录</h3>
+            <input type="text" id="vipUsername" class="w-full bg-[#222] border border-[#333] text-white px-3 py-2 rounded-lg mb-4 focus:outline-none focus:border-white transition-colors" placeholder="用户名">
+            <input type="password" id="vipPassword" class="w-full bg-[#222] border border-[#333] text-white px-3 py-2 rounded-lg mb-4 focus:outline-none focus:border-white transition-colors" placeholder="密码">
+            <button onclick="verifyVipLogin()" class="w-full bg-white text-black font-medium rounded-lg px-4 py-2 hover:bg-gray-200 transition-colors">登录</button>
+            <button onclick="closeVipModal()" class="w-full text-gray-400 mt-2 hover:text-white">取消</button>
         </div>
     </div>
 
