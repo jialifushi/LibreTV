@@ -24,7 +24,7 @@ const CUSTOM_API_CONFIG = { // 示例配置，需根据实际需求调整
     testTimeout: 8000
 };
 
-const PLAYER_CONFIG = { // 示例配置
+const PLAYER_CONFIG = { // 示例配置，定义在此处作为全局变量
     adFilteringStorage: 'adFilterEnabled' // 统一使用 adFilterEnabled
 };
 
