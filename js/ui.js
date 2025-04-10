@@ -254,7 +254,7 @@ function initSettings() {
         document.getElementById('yellowFilterSwitch').classList.add('hidden');
         document.getElementById('adFilterSwitch').classList.add('hidden');
         document.getElementById('keyVerification').classList.remove('hidden');
-        document.getElementById('userStatus').textContent = "用户: 未登录";
+        document.getElementById('userStatus').textContent = "用户: Guest 未登录";
         logoutBtn.classList.add('hidden');
     }
 }
