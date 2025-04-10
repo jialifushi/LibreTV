@@ -230,6 +230,13 @@ const SECRET_KEY = "aihezhuang"; // Guest 密钥
 const VIP_CREDENTIALS = { username: "vipuser", password: "hezhuanglove" }; // VIP 账号密码 (A)
 const SVIP_CREDENTIALS = { username: "svipuser", password: "Hertzsuperlove" }; // SVIP 账号密码 (B)
 const LOGIN_DURATION = 24 * 60 * 60 * 1000;
+
+// ui.js
+const SECRET_KEY = "guestkey"; // Guest 密钥
+const VIP_CREDENTIALS = { username: "vipuser", password: "vippass" }; // VIP 账号密码 (A)
+const SVIP_CREDENTIALS = { username: "svipuser", password: "svippass" }; // SVIP 账号密码 (B)
+const LOGIN_DURATION = 24 * 60 * 60 * 1000; // 24小时（毫秒）
+
 // 初始化页面状态
 function initSettings() {
     const guestLogin = JSON.parse(localStorage.getItem('guestLogin'));
@@ -392,22 +399,40 @@ function verifyVipLogin() {
 function logout() {
     const yellowFilterToggle = document.getElementById('yellowFilterToggle');
     const adFilterToggle = document.getElementById('adFilterToggle');
+    const vipLogin = localStorage.getItem('vipLogin');
+    const svipLogin = localStorage.getItem('svipLogin');
+    const guestLogin = localStorage.getItem('guestLogin');
 
-    localStorage.removeItem('guestLogin');
-    localStorage.removeItem('vipLogin');
-    localStorage.removeItem('svipLogin');
-    localStorage.removeItem('yellowFilterEnabled');
-    localStorage.removeItem(PLAYER_CONFIG.adFilteringStorage);
-    document.getElementById('apiSourceContainer').classList.add('hidden');
-    document.getElementById('yellowFilterContainer').classList.add('hidden');
-    document.getElementById('yellowFilterSwitch').classList.add('hidden');
-    document.getElementById('adFilterSwitch').classList.add('hidden');
-    document.getElementById('keyVerification').classList.remove('hidden');
-    document.getElementById('userStatus').textContent = "用户: 未登录";
-    document.getElementById('logoutBtn').classList.add('hidden');
-    yellowFilterToggle.checked = true; // 恢复默认打开
-    adFilterToggle.checked = false; // 恢复默认关闭
-    showToast('已退出登录', 'success');
+    if (vipLogin || svipLogin) {
+        // VIP 或 SVIP 退出到 Guest 状态
+        localStorage.removeItem('vipLogin');
+        localStorage.removeItem('svipLogin');
+        localStorage.setItem('guestLogin', JSON.stringify({ timestamp: Date.now() }));
+        document.getElementById('apiSourceContainer').classList.add('hidden');
+        document.getElementById('yellowFilterContainer').classList.remove('hidden');
+        document.getElementById('yellowFilterSwitch').classList.add('hidden');
+        document.getElementById('adFilterSwitch').classList.remove('hidden');
+        document.getElementById('keyVerification').classList.add('hidden');
+        document.getElementById('userStatus').textContent = "用户: Guest 未登录";
+        document.getElementById('logoutBtn').classList.remove('hidden');
+        showToast('已退出到 Guest 状态', 'success');
+        bindVipLoginEvent();
+    } else if (guestLogin) {
+        // Guest 退出到初始状态
+        localStorage.removeItem('guestLogin');
+        localStorage.removeItem('yellowFilterEnabled');
+        localStorage.removeItem(PLAYER_CONFIG.adFilteringStorage);
+        document.getElementById('apiSourceContainer').classList.add('hidden');
+        document.getElementById('yellowFilterContainer').classList.add('hidden');
+        document.getElementById('yellowFilterSwitch').classList.add('hidden');
+        document.getElementById('adFilterSwitch').classList.add('hidden');
+        document.getElementById('keyVerification').classList.remove('hidden');
+        document.getElementById('userStatus').textContent = "用户: 未登录";
+        document.getElementById('logoutBtn').classList.add('hidden');
+        yellowFilterToggle.checked = true; // 恢复默认打开
+        adFilterToggle.checked = false; // 恢复默认关闭
+        showToast('已退出登录', 'success');
+    }
 }
 
 // 保存开关状态
@@ -433,17 +458,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (event.key === 'Enter') verifyVipLogin();
     });
     document.getElementById('logoutBtn').addEventListener('click', logout);
-    
-    // 添加搜索框回车事件
-    const searchInput = document.getElementById('searchInput');
-    if (searchInput) {
-        searchInput.addEventListener('keypress', function(event) {
-            if (event.key === 'Enter') {
-                search(); // 调用现有的 search() 函数
-            }
-        });
-    }
-    
+
     // 监听开关状态变化
     const yellowFilterToggle = document.getElementById('yellowFilterToggle');
     const adFilterToggle = document.getElementById('adFilterToggle');
@@ -459,8 +474,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-
-
 // 其他函数
 function toggleSettings(e) {
     e && e.stopPropagation();
@@ -471,7 +484,7 @@ function toggleSettings(e) {
 function showToast(message, type = 'error') {
     const toast = document.getElementById('toast');
     const toastMessage = document.getElementById('toastMessage');
-    const bgColors = { 'error': 'bg-red-500', 'success': 'bg-green-500' };
+    const bgColors = { 'error': 'bg-red-500', 'success': 'bg-green-500', 'info': 'bg-blue-500', 'warning': 'bg-yellow-500' };
     toast.className = `fixed top-4 left-1/2 -translate-x-1/2 px-6 py-3 rounded-lg shadow-lg transform transition-all duration-300 ${bgColors[type] || bgColors.error} text-white`;
     toastMessage.textContent = message;
     toast.style.opacity = '1';
@@ -481,3 +494,6 @@ function showToast(message, type = 'error') {
         toast.style.transform = 'translateX(-50%) translateY(-100%)';
     }, 3000);
 }
+
+
+
