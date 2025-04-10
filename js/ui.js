@@ -230,7 +230,6 @@ const SECRET_KEY = "aihezhuang"; // Guest 密钥
 const VIP_CREDENTIALS = { username: "vipuser", password: "hezhuanglove" }; // VIP 账号密码 (A)
 const SVIP_CREDENTIALS = { username: "svipuser", password: "Hertzsuperlove" }; // SVIP 账号密码 (B)
 const LOGIN_DURATION = 24 * 60 * 60 * 1000;
-
 // 初始化页面状态
 function initSettings() {
     const guestLogin = JSON.parse(localStorage.getItem('guestLogin'));
@@ -246,13 +245,6 @@ function initSettings() {
         console.error("开关元素未找到:", { yellowFilterToggle, adFilterToggle });
         return;
     }
-
-    // 恢复保存的开关状态
-    const yellowFilterState = localStorage.getItem('yellowFilterState');
-    const adFilterState = localStorage.getItem('adFilterState');
-    yellowFilterToggle.checked = yellowFilterState !== null ? yellowFilterState === 'true' : true; // 默认打开
-    adFilterToggle.checked = adFilterState !== null ? adFilterState === 'true' : false; // 默认关闭
-    console.log("恢复开关状态 - 黄色内容:", yellowFilterToggle.checked, "分片广告:", adFilterToggle.checked);
 
     // SVIP 已登录
     if (svipLogin && (currentTime - svipLogin.timestamp) < LOGIN_DURATION) {
@@ -306,6 +298,13 @@ function initSettings() {
         logoutBtn.classList.add('hidden');
         console.log("未登录状态");
     }
+
+    // 恢复保存的开关状态（在登录逻辑之后）
+    const yellowFilterState = localStorage.getItem('yellowFilterState');
+    const adFilterState = localStorage.getItem('adFilterState');
+    yellowFilterToggle.checked = yellowFilterState !== null ? yellowFilterState === 'true' : true; // 默认打开
+    adFilterToggle.checked = adFilterState !== null ? adFilterState === 'true' : false; // 默认关闭
+    console.log("恢复开关状态 - 黄色内容:", yellowFilterToggle.checked, "分片广告:", adFilterToggle.checked);
 }
 
 // 绑定 VIP 登录点击事件
@@ -459,6 +458,8 @@ document.addEventListener('DOMContentLoaded', () => {
         console.error("adFilterToggle 未找到");
     }
 });
+
+
 
 
 // 其他函数
