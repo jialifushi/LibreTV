@@ -43,90 +43,90 @@
         </button>
     </div>
 
-<!-- 设置面板 -->
-<div id="settingsPanel" class="settings-panel fixed right-0 top-0 h-full w-80 bg-[#111] border-l border-[#333] p-6 z-40" aria-label="设置面板" aria-hidden="true">
-    <div class="flex justify-between items-center mb-6">
-        <h3 class="text-xl font-bold gradient-text">设置</h3>
-        <button onclick="toggleSettings()" class="text-gray-400 hover:text-white" aria-label="关闭设置">×</button>
-    </div>
-    <div class="space-y-4">
-        <!-- 密钥验证区域 -->
-        <div id="keyVerification" class="space-y-4">
-            <label class="block text-sm font-medium text-gray-400 mb-2">输入密钥以解锁自定义选项</label>
-            <input 
-                type="password" 
-                id="keyInput" 
-                class="w-full bg-[#222] border border-[#333] text-white px-3 py-2 rounded-lg focus:outline-none focus:border-white transition-colors"
-                placeholder="输入密钥"
-            >
-            <button onclick="verifyKey()" class="w-full bg-white text-black font-medium rounded-lg px-4 py-2 hover:bg-gray-200 transition-colors">
-                验证
-            </button>
+    <!-- 设置面板 -->
+    <div id="settingsPanel" class="settings-panel fixed right-0 top-0 h-full w-80 bg-[#111] border-l border-[#333] p-6 z-40" aria-label="设置面板" aria-hidden="true">
+        <div class="flex justify-between items-center mb-6">
+            <h3 class="text-xl font-bold gradient-text">设置</h3>
+            <button onclick="toggleSettings()" class="text-gray-400 hover:text-white" aria-label="关闭设置">×</button>
         </div>
-
-        <!-- 选择采集站点 -->
-        <div id="apiSourceContainer">
-            <label class="block text-sm font-medium text-gray-400 mb-2">选择采集站点</label>
-            <select id="apiSource" class="w-full bg-[#222] border border-[#333] text-white px-3 py-2 rounded-lg focus:outline-none focus:border-white transition-colors">
-                <option value="aggregated">聚合搜索 (所有源)</option>
-                <option value="heimuer" selected>黑木耳影视 (heimuer)</option>
-                <option value="ffzy">非凡影视 (ffzy)</option>
-                <option value="tyyszy">天涯资源 (tyyszy)</option>
-                <option value="ckzy">CK资源 (ckzy)</option>
-                <option value="zy360">360资源 (zy360)</option>
-                <option value="wolong">卧龙资源 (wolong)</option>
-                <option value="cjhw">新华为 (cjhw)</option>
-                <option value="dbzy">豆瓣资源 (dbzy)</option>
-                <option value="jisu">极速资源 (jisu)</option>
-                <option value="custom" style="display: none;">自定义接口</option> <!-- 默认隐藏 -->
-            </select>
-        </div>
-
-        <!-- 自定义接口输入框，默认隐藏 -->
-        <div id="customApiInput" class="hidden">
-            <label class="block text-sm font-medium text-gray-400 mb-2">自定义接口地址(可添加多个，用逗号分隔)</label>
-            <input 
-                type="text" 
-                id="customApiUrl" 
-                class="w-full bg-[#222] border border-[#333] text-white px-3 py-2 rounded-lg focus:outline-none focus:border-white transition-colors"
-                placeholder="https://example1.com,https://example2.com..."
-            >
-            <p class="text-xs text-gray-500 mt-1">格式: https://example1.com,https://example2.com (不含最后的斜杠)</p>
-        </div>
-
-        <!-- 其他设置项保持不变 -->
-        <div>
-            <div class="flex items-center justify-between">
-                <label class="text-sm font-medium text-gray-400">黄色内容过滤</label>
-                <div class="relative inline-block w-12 align-middle select-none">
-                    <input type="checkbox" id="yellowFilterToggle" class="opacity-0 absolute w-full h-full cursor-pointer z-10">
-                    <div class="toggle-bg bg-[#333] w-12 h-6 rounded-full transition-colors duration-300 ease-in-out"></div>
-                    <div class="toggle-dot absolute w-5 h-5 bg-white rounded-full top-0.5 left-0.5 transition-transform duration-300 ease-in-out"></div>
-                </div>
+        <div class="space-y-4">
+            <!-- 密钥验证区域 -->
+            <div id="keyVerification">
+                <label class="block text-sm font-medium text-gray-400 mb-2">输入密钥以解锁自定义选项</label>
+                <input 
+                    type="password" 
+                    id="keyInput" 
+                    class="w-full bg-[#222] border border-[#333] text-white px-3 py-2 rounded-lg focus:outline-none focus:border-white transition-colors"
+                    placeholder="输入密钥"
+                >
+                <button onclick="verifyKey()" class="w-full bg-white text-black font-medium rounded-lg px-4 py-2 mt-2 hover:bg-gray-200 transition-colors">
+                    验证
+                </button>
             </div>
-            <p class="text-xs text-gray-500 mt-1">过滤分类包含"伦理片"、"色情片"等成人内容</p>
-        </div>
 
-        <div>
-            <div class="flex items-center justify-between">
-                <label class="text-sm font-medium text-gray-400">分片广告过滤</label>
-                <div class="relative inline-block w-12 align-middle select-none">
-                    <input type="checkbox" id="adFilterToggle" class="opacity-0 absolute w-full h-full cursor-pointer z-10">
-                    <div class="toggle-bg bg-[#333] w-12 h-6 rounded-full transition-colors duration-300 ease-in-out"></div>
-                    <div class="toggle-dot absolute w-5 h-5 bg-white rounded-full top-0.5 left-0.5 transition-transform duration-300 ease-in-out"></div>
-                </div>
+            <!-- 选择采集站点（默认隐藏） -->
+            <div id="apiSourceContainer" class="hidden">
+                <label class="block text-sm font-medium text-gray-400 mb-2">选择采集站点</label>
+                <select id="apiSource" class="w-full bg-[#222] border border-[#333] text-white px-3 py-2 rounded-lg focus:outline-none focus:border-white transition-colors">
+                    <option value="aggregated">聚合搜索 (所有源)</option>
+                    <option value="heimuer" selected>黑木耳影视 (heimuer)</option>
+                    <option value="ffzy">非凡影视 (ffzy)</option>
+                    <option value="tyyszy">天涯资源 (tyyszy)</option>
+                    <option value="ckzy">CK资源 (ckzy)</option>
+                    <option value="zy360">360资源 (zy360)</option>
+                    <option value="wolong">卧龙资源 (wolong)</option>
+                    <option value="cjhw">新华为 (cjhw)</option>
+                    <option value="dbzy">豆瓣资源 (dbzy)</option>
+                    <option value="jisu">极速资源 (jisu)</option>
+                    <option value="custom" style="display: none;">自定义接口</option>
+                </select>
             </div>
-            <p class="text-xs text-gray-500 mt-1">关闭可减少旧版浏览器播放卡顿问题</p>
-        </div>
 
-        <div class="mt-4">
-            <p class="text-xs text-gray-500">当前站点代码：
-                <span id="currentCode" class="text-white"></span>
-                <span id="siteStatus" class="ml-2"></span>
-            </p>
+            <!-- 自定义接口输入框（默认隐藏） -->
+            <div id="customApiInput" class="hidden">
+                <label class="block text-sm font-medium text-gray-400 mb-2">自定义接口地址(可添加多个，用逗号分隔)</label>
+                <input 
+                    type="text" 
+                    id="customApiUrl" 
+                    class="w-full bg-[#222] border border-[#333] text-white px-3 py-2 rounded-lg focus:outline-none focus:border-white transition-colors"
+                    placeholder="https://example1.com,https://example2.com..."
+                >
+                <p class="text-xs text-gray-500 mt-1">格式: https://example1.com,https://example2.com (不含最后的斜杠)</p>
+            </div>
+
+            <!-- 其他设置项 -->
+            <div>
+                <div class="flex items-center justify-between">
+                    <label class="text-sm font-medium text-gray-400">黄色内容过滤</label>
+                    <div class="relative inline-block w-12 align-middle select-none">
+                        <input type="checkbox" id="yellowFilterToggle" class="opacity-0 absolute w-full h-full cursor-pointer z-10">
+                        <div class="toggle-bg bg-[#333] w-12 h-6 rounded-full transition-colors duration-300 ease-in-out"></div>
+                        <div class="toggle-dot absolute w-5 h-5 bg-white rounded-full top-0.5 left-0.5 transition-transform duration-300 ease-in-out"></div>
+                    </div>
+                </div>
+                <p class="text-xs text-gray-500 mt-1">过滤分类包含"伦理片"、"色情片"等成人内容</p>
+            </div>
+
+            <div>
+                <div class="flex items-center justify-between">
+                    <label class="text-sm font-medium text-gray-400">分片广告过滤</label>
+                    <div class="relative inline-block w-12 align-middle select-none">
+                        <input type="checkbox" id="adFilterToggle" class="opacity-0 absolute w-full h-full cursor-pointer z-10">
+                        <div class="toggle-bg bg-[#333] w-12 h-6 rounded-full transition-colors duration-300 ease-in-out"></div>
+                        <div class="toggle-dot absolute w-5 h-5 bg-white rounded-full top-0.5 left-0.5 transition-transform duration-300 ease-in-out"></div>
+                    </div>
+                </div>
+                <p class="text-xs text-gray-500 mt-1">关闭可减少旧版浏览器播放卡顿问题</p>
+            </div>
+
+            <div class="mt-4">
+                <p class="text-xs text-gray-500">当前站点代码：
+                    <span id="currentCode" class="text-white"></span>
+                    <span id="siteStatus" class="ml-2"></span>
+                </p>
+            </div>
         </div>
     </div>
-</div>
 
     <div class="container mx-auto px-4 py-8 flex flex-col h-screen">
         <div class="flex-1 flex flex-col">
