@@ -230,6 +230,19 @@ const SECRET_KEY = "aihezhuang"; // Guest 密钥
 const VIP_CREDENTIALS = { username: "vipuser", password: "hezhuanglove" }; // VIP 账号密码 (A)
 const SVIP_CREDENTIALS = { username: "svipuser", password: "Hertzsuperlove" }; // SVIP 账号密码 (B)
 const GUEST_LOGIN_DURATION = 24 * 60 * 60 * 1000; // 24小时（毫秒）
+javascript
+
+Collapse
+
+Wrap
+
+Copy
+// ui.js
+const SECRET_KEY = "guestkey"; // Guest 密钥
+const VIP_CREDENTIALS = { username: "vipuser", password: "vippass" }; // VIP 账号密码 (A)
+const SVIP_CREDENTIALS = { username: "svipuser", password: "svippass" }; // SVIP 账号密码 (B)
+const LOGIN_DURATION = 24 * 60 * 60 * 1000; // 24小时（毫秒）
+
 // 初始化页面状态
 function initSettings() {
     const guestLogin = JSON.parse(localStorage.getItem('guestLogin'));
@@ -250,6 +263,7 @@ function initSettings() {
         document.getElementById('vipLogin').classList.add('hidden');
         document.getElementById('userStatus').textContent = "用户: SVIP";
         logoutBtn.classList.remove('hidden');
+        console.log("SVIP 登录状态恢复"); // 调试日志
     }
     // VIP 已登录
     else if (vipLogin && (currentTime - vipLogin.timestamp) < LOGIN_DURATION) {
@@ -261,6 +275,7 @@ function initSettings() {
         document.getElementById('vipLogin').classList.add('hidden');
         document.getElementById('userStatus').textContent = "用户: VIP";
         logoutBtn.classList.remove('hidden');
+        console.log("VIP 登录状态恢复"); // 调试日志
     }
     // Guest 已登录
     else if (guestLogin && (currentTime - guestLogin.timestamp) < LOGIN_DURATION) {
@@ -272,6 +287,7 @@ function initSettings() {
         document.getElementById('userStatus').textContent = "用户: Guest 未登录";
         logoutBtn.classList.remove('hidden');
         bindVipLoginEvent();
+        console.log("Guest 登录状态恢复"); // 调试日志
     }
     // 未登录
     else {
@@ -289,13 +305,20 @@ function initSettings() {
         logoutBtn.classList.add('hidden');
         yellowFilterToggle.checked = true; // 默认打开
         adFilterToggle.checked = false; // 默认关闭
+        console.log("未登录状态"); // 调试日志
     }
 
     // 恢复保存的开关状态
     const yellowFilterState = localStorage.getItem('yellowFilterState');
     const adFilterState = localStorage.getItem('adFilterState');
-    if (yellowFilterState !== null) yellowFilterToggle.checked = yellowFilterState === 'true';
-    if (adFilterState !== null) adFilterToggle.checked = adFilterState === 'true';
+    if (yellowFilterState !== null) {
+        yellowFilterToggle.checked = yellowFilterState === 'true';
+        console.log("恢复黄色内容过滤状态:", yellowFilterToggle.checked);
+    }
+    if (adFilterState !== null) {
+        adFilterToggle.checked = adFilterState === 'true';
+        console.log("恢复分片广告过滤状态:", adFilterToggle.checked);
+    }
 }
 
 // 绑定 VIP 登录点击事件
@@ -318,12 +341,13 @@ function verifyKey() {
         localStorage.removeItem('svipLogin');
         document.getElementById('adFilterSwitch').classList.remove('hidden');
         document.getElementById('yellowFilterContainer').classList.remove('hidden');
-        document.getElementById('yellowFilterSwitch').classList.add('hidden'); // Guest 无黄色内容开关
+        document.getElementById('yellowFilterSwitch').classList.add('hidden');
         document.getElementById('keyVerification').classList.add('hidden');
         document.getElementById('userStatus').textContent = "用户: Guest 未登录";
         document.getElementById('logoutBtn').classList.remove('hidden');
         showToast('Guest 验证成功', 'success');
         bindVipLoginEvent();
+        console.log("Guest 登录成功，保存状态:", localStorage.getItem('guestLogin')); // 调试日志
     } else {
         showToast('密钥错误', 'error');
     }
@@ -359,6 +383,7 @@ function verifyVipLogin() {
         document.getElementById('logoutBtn').classList.remove('hidden');
         closeVipModal();
         showToast('VIP 登录成功', 'success');
+        console.log("VIP 登录成功，保存状态:", localStorage.getItem('vipLogin')); // 调试日志
     } else if (username === SVIP_CREDENTIALS.username && password === SVIP_CREDENTIALS.password) {
         localStorage.setItem('svipLogin', JSON.stringify({ timestamp: Date.now() }));
         localStorage.removeItem('guestLogin');
@@ -372,6 +397,7 @@ function verifyVipLogin() {
         document.getElementById('logoutBtn').classList.remove('hidden');
         closeVipModal();
         showToast('SVIP 登录成功', 'success');
+        console.log("SVIP 登录成功，保存状态:", localStorage.getItem('svipLogin')); // 调试日志
     } else {
         showToast('用户名或密码错误', 'error');
     }
@@ -399,6 +425,7 @@ function logout() {
     yellowFilterToggle.checked = true; // 恢复默认打开
     adFilterToggle.checked = false; // 恢复默认关闭
     showToast('已退出登录', 'success');
+    console.log("退出登录，清除状态"); // 调试日志
 }
 
 // 保存开关状态
@@ -407,6 +434,7 @@ function saveFilterState() {
     const adFilterToggle = document.getElementById('adFilterToggle');
     localStorage.setItem('yellowFilterState', yellowFilterToggle.checked);
     localStorage.setItem('adFilterState', adFilterToggle.checked);
+    console.log("保存开关状态 - 黄色内容:", yellowFilterToggle.checked, "分片广告:", adFilterToggle.checked); // 调试日志
 }
 
 // 页面加载时初始化
@@ -419,6 +447,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (event.key === 'Enter') verifyVipLogin();
     });
     document.getElementById('logoutBtn').addEventListener('click', logout);
+
     // 添加搜索框回车事件
     const searchInput = document.getElementById('searchInput');
     if (searchInput) {
@@ -435,6 +464,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (yellowFilterToggle) yellowFilterToggle.addEventListener('change', saveFilterState);
     if (adFilterToggle) adFilterToggle.addEventListener('change', saveFilterState);
 });
+
 
 // 其他函数
 function toggleSettings(e) {
