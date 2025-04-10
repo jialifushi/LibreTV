@@ -226,36 +226,102 @@ function clearSearchHistory() {
 
 // 新增密钥验证逻辑
 // 预设密钥（请替换为您的实际密钥）
-const SECRET_KEY = "aihezhuang"; // 请替换为您的密钥
+const SECRET_KEY = "aihezhuang"; // Guest 密钥
+const VIP_CREDENTIALS = { username: "vipuser", password: "hezhuanglove" }; // VIP 账号密码 (A)
+const SVIP_CREDENTIALS = { username: "svipuser", password: "Hertzsuperlove" }; // SVIP 账号密码 (B)
 
-// 验证密钥的函数
-function verifyKey() {
-    const keyInput = document.getElementById('keyInput'); // 获取密码输入框
-    const inputValue = keyInput.value; // 获取用户输入的密码
-
-    if (inputValue === SECRET_KEY) {
-        // 验证成功
-        document.getElementById('apiSourceContainer').classList.remove('hidden'); // 显示后续区域
-        document.getElementById('keyVerification').classList.add('hidden'); // 隐藏验证区域
-        alert('验证成功！');
-    } else {
-        // 验证失败
-        alert('密钥错误，请重试！');
-    }
-
-    // 清空密码输入框
-    keyInput.value = '';
+// 初始化页面状态
+function initSettings() {
+    document.getElementById('apiSourceContainer').classList.add('hidden'); // 隐藏选择采集站点
+    document.getElementById('yellowFilterContainer').classList.add('hidden'); // 隐藏黄色内容过滤
+    document.getElementById('yellowFilterSwitch').classList.add('hidden'); // 隐藏黄色内容开关
+    document.getElementById('adFilterSwitch').classList.add('hidden'); // 隐藏分片广告开关
+    document.getElementById('keyVerification').classList.remove('hidden'); // 显示密钥验证
+    document.getElementById('userStatus').textContent = "用户: Guest"; // 默认用户
 }
 
-// 支持回车键触发验证
-document.getElementById('keyInput').addEventListener('keypress', function(event) {
-    if (event.key === 'Enter') {
-        verifyKey();
+// 验证密钥
+function verifyKey() {
+    const keyInput = document.getElementById('keyInput');
+    const inputValue = keyInput.value;
+
+    if (inputValue === SECRET_KEY) {
+        document.getElementById('adFilterSwitch').classList.remove('hidden'); // 显示分片广告开关
+        document.getElementById('yellowFilterContainer').classList.remove('hidden'); // 显示黄色内容过滤
+        document.getElementById('keyVerification').classList.add('hidden'); // 隐藏密钥验证
+        showToast('验证成功', 'success');
+    } else {
+        showToast('密钥错误', 'error');
     }
+    keyInput.value = ''; // 清空输入框
+}
+
+// 显示 VIP/SVIP 登录模态框
+function showVipModal() {
+    document.getElementById('vipModal').classList.remove('hidden');
+}
+
+// 关闭 VIP/SVIP 登录模态框
+function closeVipModal() {
+    document.getElementById('vipModal').classList.add('hidden');
+    document.getElementById('vipUsername').value = '';
+    document.getElementById('vipPassword').value = '';
+}
+
+// 验证 VIP/SVIP 登录
+function verifyVipLogin() {
+    const username = document.getElementById('vipUsername').value;
+    const password = document.getElementById('vipPassword').value;
+
+    if (username === VIP_CREDENTIALS.username && password === VIP_CREDENTIALS.password) {
+        // VIP 登录成功
+        document.getElementById('yellowFilterSwitch').classList.remove('hidden');
+        document.getElementById('vipLogin').classList.add('hidden');
+        document.getElementById('userStatus').textContent = "用户: VIP";
+        closeVipModal();
+        showToast('VIP 登录成功', 'success');
+    } else if (username === SVIP_CREDENTIALS.username && password === SVIP_CREDENTIALS.password) {
+        // SVIP 登录成功
+        document.getElementById('yellowFilterSwitch').classList.remove('hidden');
+        document.getElementById('vipLogin').classList.add('hidden');
+        document.getElementById('apiSourceContainer').classList.remove('hidden');
+        document.getElementById('userStatus').textContent = "用户: SVIP";
+        closeVipModal();
+        showToast('SVIP 登录成功', 'success');
+    } else {
+        showToast('用户名或密码错误', 'error');
+    }
+}
+
+// 页面加载时初始化
+document.addEventListener('DOMContentLoaded', () => {
+    initSettings();
+    document.getElementById('keyInput').addEventListener('keypress', function(event) {
+        if (event.key === 'Enter') verifyKey();
+    });
+    document.getElementById('vipLogin').addEventListener('click', showVipModal);
+    document.getElementById('vipPassword').addEventListener('keypress', function(event) {
+        if (event.key === 'Enter') verifyVipLogin();
+    });
 });
 
-// 页面加载时默认状态
-window.addEventListener('load', function() {
-    document.getElementById('apiSourceContainer').classList.add('hidden'); // 隐藏后续区域
-    document.getElementById('keyVerification').classList.remove('hidden'); // 显示验证区域
-});
+// 其他函数保持不变（如 toggleSettings、showToast 等）
+function toggleSettings(e) {
+    e && e.stopPropagation();
+    const panel = document.getElementById('settingsPanel');
+    panel.classList.toggle('show');
+}
+
+function showToast(message, type = 'error') {
+    const toast = document.getElementById('toast');
+    const toastMessage = document.getElementById('toastMessage');
+    const bgColors = { 'error': 'bg-red-500', 'success': 'bg-green-500' };
+    toast.className = `fixed top-4 left-1/2 -translate-x-1/2 px-6 py-3 rounded-lg shadow-lg transform transition-all duration-300 ${bgColors[type] || bgColors.error} text-white`;
+    toastMessage.textContent = message;
+    toast.style.opacity = '1';
+    toast.style.transform = 'translateX(-50%) translateY(0)';
+    setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateX(-50%) translateY(-100%)';
+    }, 3000);
+}
