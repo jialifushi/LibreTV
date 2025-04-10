@@ -1,4 +1,3 @@
-// app.js
 
 // 全局变量
 let currentApiSource = localStorage.getItem('currentApiSource') || 'heimuer';
@@ -56,18 +55,6 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // 渲染搜索历史
     renderSearchHistory();
-    
-    // 设置黄色内容过滤开关初始状态
-    const yellowFilterToggle = document.getElementById('yellowFilterToggle');
-    if (yellowFilterToggle) {
-        yellowFilterToggle.checked = localStorage.getItem('yellowFilterEnabled') === 'true';
-    }
-    
-    // 设置广告过滤开关初始状态
-    const adFilterToggle = document.getElementById('adFilterToggle');
-    if (adFilterToggle) {
-        adFilterToggle.checked = localStorage.getItem(PLAYER_CONFIG.adFilteringStorage) !== 'false'; // 默认为true
-    }
     
     // 设置事件监听器
     setupEventListeners();
