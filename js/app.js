@@ -1,3 +1,5 @@
+// app.js
+
 // 全局变量
 let currentApiSource = localStorage.getItem('currentApiSource') || 'heimuer';
 let customApiUrl = localStorage.getItem('customApiUrl') || '';
@@ -271,7 +273,8 @@ function setupEventListeners() {
     if (searchInput) {
         searchInput.addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
-                search();
+                console.log("回车键触发，调用 search()");
+                search(); // 直接调用全局 search 函数
             }
         });
     } else {
@@ -304,10 +307,15 @@ function setupEventListeners() {
         });
     }
 
-    // 绑定搜索按钮（假设存在）
+    // 绑定搜索按钮点击事件
     const searchButton = document.getElementById('searchButton');
     if (searchButton) {
-        searchButton.addEventListener('click', search);
+        searchButton.addEventListener('click', function() {
+            console.log("搜索按钮点击，调用 search()");
+            search(); // 确保点击按钮触发 search
+        });
+    } else {
+        console.error("searchButton 未找到");
     }
 }
 
@@ -332,6 +340,7 @@ function resetSearchArea() {
 // 搜索功能（暴露到全局作用域以支持 onclick）
 window.search = async function() {
     const query = document.getElementById('searchInput').value.trim();
+    console.log("搜索查询:", query); // 调试：确认 search 被调用
     
     if (!query) {
         showToast('请输入搜索内容', 'info');
