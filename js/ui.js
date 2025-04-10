@@ -240,8 +240,8 @@ function initSettings() {
     const yellowFilterToggle = document.getElementById('yellowFilterToggle');
     const adFilterToggle = document.getElementById('adFilterToggle');
 
+    // SVIP 已登录
     if (svipLogin && (currentTime - svipLogin.timestamp) < LOGIN_DURATION) {
-        // SVIP 已登录
         document.getElementById('apiSourceContainer').classList.remove('hidden');
         document.getElementById('yellowFilterContainer').classList.remove('hidden');
         document.getElementById('yellowFilterSwitch').classList.remove('hidden');
@@ -250,8 +250,9 @@ function initSettings() {
         document.getElementById('vipLogin').classList.add('hidden');
         document.getElementById('userStatus').textContent = "用户: SVIP";
         logoutBtn.classList.remove('hidden');
-    } else if (vipLogin && (currentTime - vipLogin.timestamp) < LOGIN_DURATION) {
-        // VIP 已登录
+    }
+    // VIP 已登录
+    else if (vipLogin && (currentTime - vipLogin.timestamp) < LOGIN_DURATION) {
         document.getElementById('apiSourceContainer').classList.add('hidden');
         document.getElementById('yellowFilterContainer').classList.remove('hidden');
         document.getElementById('yellowFilterSwitch').classList.remove('hidden');
@@ -260,8 +261,9 @@ function initSettings() {
         document.getElementById('vipLogin').classList.add('hidden');
         document.getElementById('userStatus').textContent = "用户: VIP";
         logoutBtn.classList.remove('hidden');
-    } else if (guestLogin && (currentTime - guestLogin.timestamp) < LOGIN_DURATION) {
-        // Guest 已登录
+    }
+    // Guest 已登录
+    else if (guestLogin && (currentTime - guestLogin.timestamp) < LOGIN_DURATION) {
         document.getElementById('apiSourceContainer').classList.add('hidden');
         document.getElementById('yellowFilterContainer').classList.remove('hidden');
         document.getElementById('yellowFilterSwitch').classList.add('hidden');
@@ -270,8 +272,9 @@ function initSettings() {
         document.getElementById('userStatus').textContent = "用户: Guest 未登录";
         logoutBtn.classList.remove('hidden');
         bindVipLoginEvent();
-    } else {
-        // 未登录
+    }
+    // 未登录
+    else {
         localStorage.removeItem('guestLogin');
         localStorage.removeItem('vipLogin');
         localStorage.removeItem('svipLogin');
@@ -315,6 +318,7 @@ function verifyKey() {
         localStorage.removeItem('svipLogin');
         document.getElementById('adFilterSwitch').classList.remove('hidden');
         document.getElementById('yellowFilterContainer').classList.remove('hidden');
+        document.getElementById('yellowFilterSwitch').classList.add('hidden'); // Guest 无黄色内容开关
         document.getElementById('keyVerification').classList.add('hidden');
         document.getElementById('userStatus').textContent = "用户: Guest 未登录";
         document.getElementById('logoutBtn').classList.remove('hidden');
@@ -349,8 +353,9 @@ function verifyVipLogin() {
         localStorage.removeItem('svipLogin');
         document.getElementById('yellowFilterSwitch').classList.remove('hidden');
         document.getElementById('vipLogin').classList.add('hidden');
-        document.getElementById('userStatus').textContent = "用户: VIP";
         document.getElementById('adFilterSwitch').classList.remove('hidden');
+        document.getElementById('keyVerification').classList.add('hidden');
+        document.getElementById('userStatus').textContent = "用户: VIP";
         document.getElementById('logoutBtn').classList.remove('hidden');
         closeVipModal();
         showToast('VIP 登录成功', 'success');
@@ -362,6 +367,7 @@ function verifyVipLogin() {
         document.getElementById('vipLogin').classList.add('hidden');
         document.getElementById('apiSourceContainer').classList.remove('hidden');
         document.getElementById('adFilterSwitch').classList.remove('hidden');
+        document.getElementById('keyVerification').classList.add('hidden');
         document.getElementById('userStatus').textContent = "用户: SVIP";
         document.getElementById('logoutBtn').classList.remove('hidden');
         closeVipModal();
@@ -429,7 +435,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (yellowFilterToggle) yellowFilterToggle.addEventListener('change', saveFilterState);
     if (adFilterToggle) adFilterToggle.addEventListener('change', saveFilterState);
 });
-
 
 // 其他函数
 function toggleSettings(e) {
