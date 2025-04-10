@@ -230,6 +230,10 @@ const SECRET_KEY = "aihezhuang"; // Guest 密钥
 const VIP_CREDENTIALS = { username: "vipuser", password: "hezhuanglove" }; // VIP 账号密码 (A)
 const SVIP_CREDENTIALS = { username: "svipuser", password: "Hertzsuperlove" }; // SVIP 账号密码 (B)
 const LOGIN_DURATION = 24 * 60 * 60 * 1000;
+const PLAYER_CONFIG = { // 示例配置
+    adFilteringStorage: 'adFilterEnabled' // 与 app.js 统一
+};
+
 // 初始化页面状态
 function initSettings() {
     const guestLogin = JSON.parse(localStorage.getItem('guestLogin'));
@@ -287,8 +291,8 @@ function initSettings() {
         localStorage.removeItem('guestLogin');
         localStorage.removeItem('vipLogin');
         localStorage.removeItem('svipLogin');
-        localStorage.removeItem('yellowFilterState');
-        localStorage.removeItem('adFilterState');
+        localStorage.removeItem('yellowFilterEnabled');
+        localStorage.removeItem(PLAYER_CONFIG.adFilteringStorage);
         document.getElementById('apiSourceContainer').classList.add('hidden');
         document.getElementById('yellowFilterContainer').classList.add('hidden');
         document.getElementById('yellowFilterSwitch').classList.add('hidden');
@@ -300,10 +304,8 @@ function initSettings() {
     }
 
     // 恢复保存的开关状态（在登录逻辑之后）
-    const yellowFilterState = localStorage.getItem('yellowFilterState');
-    const adFilterState = localStorage.getItem('adFilterState');
-    yellowFilterToggle.checked = yellowFilterState !== null ? yellowFilterState === 'true' : true; // 默认打开
-    adFilterToggle.checked = adFilterState !== null ? adFilterState === 'true' : false; // 默认关闭
+    yellowFilterToggle.checked = localStorage.getItem('yellowFilterEnabled') === 'true' ? true : true; // 默认打开
+    adFilterToggle.checked = localStorage.getItem(PLAYER_CONFIG.adFilteringStorage) === 'true' ? true : false; // 默认关闭
     console.log("恢复开关状态 - 黄色内容:", yellowFilterToggle.checked, "分片广告:", adFilterToggle.checked);
 }
 
@@ -396,8 +398,8 @@ function logout() {
     localStorage.removeItem('guestLogin');
     localStorage.removeItem('vipLogin');
     localStorage.removeItem('svipLogin');
-    localStorage.removeItem('yellowFilterState');
-    localStorage.removeItem('adFilterState');
+    localStorage.removeItem('yellowFilterEnabled');
+    localStorage.removeItem(PLAYER_CONFIG.adFilteringStorage);
     document.getElementById('apiSourceContainer').classList.add('hidden');
     document.getElementById('yellowFilterContainer').classList.add('hidden');
     document.getElementById('yellowFilterSwitch').classList.add('hidden');
@@ -415,8 +417,8 @@ function saveFilterState() {
     const yellowFilterToggle = document.getElementById('yellowFilterToggle');
     const adFilterToggle = document.getElementById('adFilterToggle');
     if (yellowFilterToggle && adFilterToggle) {
-        localStorage.setItem('yellowFilterState', yellowFilterToggle.checked);
-        localStorage.setItem('adFilterState', adFilterToggle.checked);
+        localStorage.setItem('yellowFilterEnabled', yellowFilterToggle.checked);
+        localStorage.setItem(PLAYER_CONFIG.adFilteringStorage, adFilterToggle.checked);
         console.log("保存开关状态 - 黄色内容:", yellowFilterToggle.checked, "分片广告:", adFilterToggle.checked);
     } else {
         console.error("保存开关状态失败，元素未找到");
@@ -443,7 +445,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
-
+    
     // 监听开关状态变化
     const yellowFilterToggle = document.getElementById('yellowFilterToggle');
     const adFilterToggle = document.getElementById('adFilterToggle');
@@ -458,7 +460,6 @@ document.addEventListener('DOMContentLoaded', () => {
         console.error("adFilterToggle 未找到");
     }
 });
-
 
 
 
