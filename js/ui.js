@@ -229,7 +229,7 @@ function clearSearchHistory() {
 const SECRET_KEY = "aihezhuang"; // Guest 密钥
 const VIP_CREDENTIALS = { username: "vipuser", password: "hezhuanglove" }; // VIP 账号密码 (A)
 const SVIP_CREDENTIALS = { username: "svipuser", password: "Hertzsuperlove" }; // SVIP 账号密码 (B)
-
+const GUEST_LOGIN_DURATION = 24 * 60 * 60 * 1000; // 24小时（毫秒）
 // 初始化页面状态
 function initSettings() {
     const guestLogin = JSON.parse(localStorage.getItem('guestLogin'));
@@ -307,6 +307,7 @@ function verifyVipLogin() {
     } else {
         showToast('用户名或密码错误', 'error');
     }
+    keyInput.value = ''; // 清空输入框
 
 }
 
