@@ -135,7 +135,7 @@ function saveSearchHistory(query) {
     if (!query || !query.trim()) return;
     
     // 清理输入，防止XSS
-    query = query.trim().substring(0, 50).replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    query = query.trim().substring(0, 50).replace(/</g, '<').replace(/>/g, '>');
     
     let history = getSearchHistory();
     
@@ -223,3 +223,54 @@ function clearSearchHistory() {
         showToast('清除搜索历史失败', 'error');
     }
 }
+
+// 新增密钥验证逻辑
+
+// 预设密钥（请替换为您的实际密钥）
+const SECRET_KEY = "mysecretpassword"; // 请替换为您的密钥
+
+// 检查验证状态
+function checkVerification() {
+    const isVerified = localStorage.getItem('isVerified') === 'true';
+    if (isVerified) {
+        showCustomOptions();
+    } else {
+        hideCustomOptions();
+    }
+}
+
+// 显示“选择采集站点”部分
+function showCustomOptions() {
+    document.getElementById('apiSourceContainer').classList.remove('hidden');
+}
+
+// 隐藏“选择采集站点”部分
+function hideCustomOptions() {
+    document.getElementById('apiSourceContainer').classList.add('hidden');
+}
+
+// 验证密钥
+function verifyKey() {
+    const inputKey = document.getElementById('keyInput').value;
+    if (inputKey === SECRET_KEY) {
+        localStorage.setItem('isVerified', 'true');
+        showCustomOptions();
+        showToast('验证成功', 'success');
+    } else {
+        showToast('密钥错误', 'error');
+    }
+}
+
+// 初始化
+document.addEventListener('DOMContentLoaded', () => {
+    checkVerification();
+    // 添加回车键触发验证
+    const keyInput = document.getElementById('keyInput');
+    if (keyInput) {
+        keyInput.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                verifyKey();
+            }
+        });
+    }
+});
