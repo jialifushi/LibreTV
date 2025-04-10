@@ -280,6 +280,7 @@ function verifyKey() {
         document.getElementById('keyVerification').classList.add('hidden');
         document.getElementById('logoutBtn').classList.remove('hidden');
         showToast('Guest 验证成功', 'success');
+        bindVipLoginEvent();
     } else {
         showToast('密钥错误', 'error');
     }
