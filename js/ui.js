@@ -245,6 +245,7 @@ function initSettings() {
         document.getElementById('keyVerification').classList.add('hidden');
         document.getElementById('userStatus').textContent = "用户: Guest";
         logoutBtn.classList.remove('hidden');
+        bindVipLoginEvent();
     } else {
         // Guest 未登录或过期
         localStorage.removeItem('guestLogin');
@@ -255,6 +256,15 @@ function initSettings() {
         document.getElementById('keyVerification').classList.remove('hidden');
         document.getElementById('userStatus').textContent = "用户: Guest";
         logoutBtn.classList.add('hidden');
+    }
+}
+
+// 绑定 VIP 登录点击事件
+function bindVipLoginEvent() {
+    const vipLogin = document.getElementById('vipLogin');
+    if (vipLogin) {
+        vipLogin.removeEventListener('click', showVipModal);
+        vipLogin.addEventListener('click', showVipModal);
     }
 }
 
