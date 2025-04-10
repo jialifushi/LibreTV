@@ -307,7 +307,7 @@ function verifyVipLogin() {
     } else {
         showToast('用户名或密码错误', 'error');
     }
-    keyInput.value = ''; // 清空输入框
+
 }
 
 // 页面加载时初始化
