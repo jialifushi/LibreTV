@@ -230,18 +230,6 @@ const SECRET_KEY = "aihezhuang"; // Guest 密钥
 const VIP_CREDENTIALS = { username: "vipuser", password: "hezhuanglove" }; // VIP 账号密码 (A)
 const SVIP_CREDENTIALS = { username: "svipuser", password: "Hertzsuperlove" }; // SVIP 账号密码 (B)
 const GUEST_LOGIN_DURATION = 24 * 60 * 60 * 1000; // 24小时（毫秒）
-javascript
-
-Collapse
-
-Wrap
-
-Copy
-// ui.js
-const SECRET_KEY = "guestkey"; // Guest 密钥
-const VIP_CREDENTIALS = { username: "vipuser", password: "vippass" }; // VIP 账号密码 (A)
-const SVIP_CREDENTIALS = { username: "svipuser", password: "svippass" }; // SVIP 账号密码 (B)
-const LOGIN_DURATION = 24 * 60 * 60 * 1000; // 24小时（毫秒）
 
 // 初始化页面状态
 function initSettings() {
