@@ -1,19 +1,13 @@
 // 全局变量
 let currentApiSource = localStorage.getItem('currentApiSource') || 'heimuer';
 let customApiUrl = localStorage.getItem('customApiUrl') || '';
-// 添加当前播放的集数索引
 let currentEpisodeIndex = 0;
-// 添加当前视频的所有集数
 let currentEpisodes = [];
-// 添加当前视频的标题
 let currentVideoTitle = '';
-// 新增全局变量用于倒序状态
 let episodesReversed = false;
-
-// 新增：解析多个自定义API源
 let customApiUrls = [];
 
-const CUSTOM_API_CONFIG = { // 示例配置，需根据实际需求调整
+const CUSTOM_API_CONFIG = {
     separator: ',',
     maxSources: 5,
     validateUrl: true,
@@ -22,42 +16,54 @@ const CUSTOM_API_CONFIG = { // 示例配置，需根据实际需求调整
     testTimeout: 8000
 };
 
-const PLAYER_CONFIG = { // 示例配置，定义在此处作为全局变量
-    adFilteringStorage: 'adFilterEnabled' // 统一使用 adFilterEnabled
+const PLAYER_CONFIG = {
+    adFilteringStorage: 'adFilterEnabled'
 };
-
-function parseCustomApiUrls() {
-    if (!customApiUrl) return [];
-    return customApiUrl.split(CUSTOM_API_CONFIG.separator)
-        .map(url => url.trim())
-        .filter(url => url.length > 0)
-        .slice(0, CUSTOM_API_CONFIG.maxSources);
-}
 
 // 页面初始化
 document.addEventListener('DOMContentLoaded', function() {
     // 初始化时检查是否使用自定义接口
     if (currentApiSource === 'custom') {
-        document.getElementById('customApiInput')?.classList.remove('hidden');
-        document.getElementById('customApiUrl').value = customApiUrl;
-        customApiUrls = parseCustomApiUrls();
+        const customApiInput = document.getElementById('customApiInput');
+        if (customApiInput) {
+            customApiInput.classList.remove('hidden');
+            document.getElementById('customApiUrl').value = customApiUrl;
+            customApiUrls = parseCustomApiUrls();
+        }
     }
 
+    const currentCodeElement = document.getElementById('currentCode');
+    if (currentCodeElement) {
+        currentCodeElement.textContent = currentApiSource || '未设置';
+    } else {
+        console.error("currentCode 元素未找到");
+    }
     // 设置 select 的默认选中值
-    document.getElementById('apiSource').value = currentApiSource;
+    const apiSourceSelect = document.getElementById('apiSource');
+    if (apiSourceSelect) {
+        apiSourceSelect.value = currentApiSource;
+    } else {
+        console.error("apiSource 元素未找到");
+    }
 
     // 初始化显示当前站点代码
     const currentCodeElement = document.getElementById('currentCode');
     if (currentCodeElement) {
-        currentCodeElement.textContent = currentApiSource;
+        currentCodeElement.textContent = currentApiSource || '未设置';
     } else {
         console.error("currentCode 元素未找到");
     }
     
-    // 初始化显示当前站点状态（使用优化后的测试函数）
-    updateSiteStatusWithTest(currentApiSource);
+    // 初始化显示当前站点状态
+    const siteStatusElement = document.getElementById('siteStatus');
+    if (siteStatusElement) {
+        siteStatusElement.innerHTML = '<span class="text-gray-500">●</span> 初始化中...';
+        updateSiteStatusWithTest(currentApiSource);
+    } else {
+        console.error("siteStatus 元素未找到");
+    }
     
-    // 渲染搜索历史
+    // 渲染搜索历史（需实现）
     renderSearchHistory();
     
     // 设置事件监听器
@@ -253,7 +259,9 @@ function setupEventListeners() {
     const searchInput = document.getElementById('searchInput');
     if (searchInput) {
         searchInput.addEventListener('keypress', function(e) {
+            console.log("按键:", e.key); // 调试：检查按下的键
             if (e.key === 'Enter') {
+                console.log("回车键触发，调用 search()");
                 search();
             }
         });
@@ -309,6 +317,7 @@ function resetSearchArea() {
 // 搜索功能
 async function search() {
     const query = document.getElementById('searchInput').value.trim();
+    console.log("搜索查询:", query); // 调试：确认 search 被调用
     
     if (!query) {
         showToast('请输入搜索内容', 'info');
@@ -316,7 +325,7 @@ async function search() {
     }
     
     showLoading();
-    
+    // 以下为搜索逻辑（保持不变）
     try {
         let apiParams;
         
