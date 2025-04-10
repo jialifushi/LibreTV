@@ -230,7 +230,6 @@ const SECRET_KEY = "aihezhuang"; // Guest 密钥
 const VIP_CREDENTIALS = { username: "vipuser", password: "hezhuanglove" }; // VIP 账号密码 (A)
 const SVIP_CREDENTIALS = { username: "svipuser", password: "Hertzsuperlove" }; // SVIP 账号密码 (B)
 const LOGIN_DURATION = 24 * 60 * 60 * 1000;
-
 // 初始化页面状态
 function initSettings() {
     const guestLogin = JSON.parse(localStorage.getItem('guestLogin'));
@@ -301,8 +300,10 @@ function initSettings() {
     }
 
     // 恢复保存的开关状态（在登录逻辑之后）
-    yellowFilterToggle.checked = localStorage.getItem('yellowFilterEnabled') === 'true' ? true : true; // 默认打开
-    adFilterToggle.checked = localStorage.getItem(PLAYER_CONFIG.adFilteringStorage) === 'true' ? true : false; // 默认关闭
+    const yellowFilterState = localStorage.getItem('yellowFilterEnabled');
+    const adFilterState = localStorage.getItem(PLAYER_CONFIG.adFilteringStorage);
+    yellowFilterToggle.checked = yellowFilterState === 'true' || yellowFilterState === null; // 默认 true
+    adFilterToggle.checked = adFilterState === 'true'; // 默认 false
     console.log("恢复开关状态 - 黄色内容:", yellowFilterToggle.checked, "分片广告:", adFilterToggle.checked);
 }
 
@@ -432,7 +433,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (event.key === 'Enter') verifyVipLogin();
     });
     document.getElementById('logoutBtn').addEventListener('click', logout);
-
+    
     // 添加搜索框回车事件
     const searchInput = document.getElementById('searchInput');
     if (searchInput) {
