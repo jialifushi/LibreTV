@@ -227,7 +227,7 @@ function clearSearchHistory() {
 // 新增密钥验证逻辑
 
 // 预设密钥（请替换为您的实际密钥）
-const SECRET_KEY = "mysecretpassword"; // 请替换为您的密钥
+const SECRET_KEY = "aihezhuang"; // 请替换为您的密钥
 
 // 检查验证状态
 function checkVerification() {
