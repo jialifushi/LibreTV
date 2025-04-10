@@ -225,52 +225,37 @@ function clearSearchHistory() {
 }
 
 // 新增密钥验证逻辑
-
 // 预设密钥（请替换为您的实际密钥）
 const SECRET_KEY = "aihezhuang"; // 请替换为您的密钥
 
-// 检查验证状态
-function checkVerification() {
-    const isVerified = localStorage.getItem('isVerified') === 'true';
-    if (isVerified) {
-        showCustomOptions();
-    } else {
-        hideCustomOptions();
-    }
-}
-
-// 显示“选择采集站点”部分
-function showCustomOptions() {
-    document.getElementById('apiSourceContainer').classList.remove('hidden');
-}
-
-// 隐藏“选择采集站点”部分
-function hideCustomOptions() {
-    document.getElementById('apiSourceContainer').classList.add('hidden');
-}
-
-// 验证密钥
+// 验证密钥的函数
 function verifyKey() {
-    const inputKey = document.getElementById('keyInput').value;
-    if (inputKey === SECRET_KEY) {
-        localStorage.setItem('isVerified', 'true');
-        showCustomOptions();
-        showToast('验证成功', 'success');
+    const keyInput = document.getElementById('keyInput'); // 获取密码输入框
+    const inputValue = keyInput.value; // 获取用户输入的密码
+
+    if (inputValue === SECRET_KEY) {
+        // 验证成功
+        document.getElementById('apiSourceContainer').classList.remove('hidden'); // 显示后续区域
+        document.getElementById('keyVerification').classList.add('hidden'); // 隐藏验证区域
+        alert('验证成功！');
     } else {
-        showToast('密钥错误', 'error');
+        // 验证失败
+        alert('密钥错误，请重试！');
     }
+
+    // 清空密码输入框
+    keyInput.value = '';
 }
 
-// 初始化
-document.addEventListener('DOMContentLoaded', () => {
-    checkVerification();
-    // 添加回车键触发验证
-    const keyInput = document.getElementById('keyInput');
-    if (keyInput) {
-        keyInput.addEventListener('keydown', function(event) {
-            if (event.key === 'Enter') {
-                verifyKey();
-            }
-        });
+// 支持回车键触发验证
+document.getElementById('keyInput').addEventListener('keypress', function(event) {
+    if (event.key === 'Enter') {
+        verifyKey();
     }
+});
+
+// 页面加载时默认状态
+window.addEventListener('load', function() {
+    document.getElementById('apiSourceContainer').classList.add('hidden'); // 隐藏后续区域
+    document.getElementById('keyVerification').classList.remove('hidden'); // 显示验证区域
 });
