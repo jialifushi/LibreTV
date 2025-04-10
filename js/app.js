@@ -1,3 +1,5 @@
+、// app.js
+
 // 全局变量
 let currentApiSource = localStorage.getItem('currentApiSource') || 'heimuer';
 let customApiUrl = localStorage.getItem('customApiUrl') || '';
@@ -12,6 +14,20 @@ let episodesReversed = false;
 
 // 新增：解析多个自定义API源
 let customApiUrls = [];
+
+const CUSTOM_API_CONFIG = { // 示例配置，需根据实际需求调整
+    separator: ',',
+    maxSources: 5,
+    validateUrl: true,
+    cacheResults: true,
+    cacheExpiry: 5184000000, // 2个月
+    testTimeout: 8000
+};
+
+const PLAYER_CONFIG = { // 示例配置
+    adFilteringStorage: 'adFilterEnabled' // 统一使用 adFilterEnabled
+};
+
 function parseCustomApiUrls() {
     if (!customApiUrl) return [];
     return customApiUrl.split(CUSTOM_API_CONFIG.separator)
@@ -24,7 +40,7 @@ function parseCustomApiUrls() {
 document.addEventListener('DOMContentLoaded', function() {
     // 初始化时检查是否使用自定义接口
     if (currentApiSource === 'custom') {
-        document.getElementById('customApiInput').classList.remove('hidden');
+        document.getElementById('customApiInput')?.classList.remove('hidden');
         document.getElementById('customApiUrl').value = customApiUrl;
         customApiUrls = parseCustomApiUrls();
     }
@@ -194,14 +210,14 @@ function setupEventListeners() {
         const customApiInput = document.getElementById('customApiInput');
         
         if (currentApiSource === 'custom') {
-            customApiInput.classList.remove('hidden');
+            customApiInput?.classList.remove('hidden');
             customApiUrl = document.getElementById('customApiUrl').value;
             localStorage.setItem('customApiUrl', customApiUrl);
             customApiUrls = parseCustomApiUrls();
             // 自定义接口不立即测试可用性
             document.getElementById('siteStatus').innerHTML = '<span class="text-gray-500">●</span> 待测试';
         } else {
-            customApiInput.classList.add('hidden');
+            customApiInput?.classList.add('hidden');
             // 非自定义接口立即测试可用性
             showToast('正在测试站点可用性...', 'info');
             updateSiteStatusWithTest(currentApiSource);
@@ -215,31 +231,39 @@ function setupEventListeners() {
     });
 
     // 自定义接口输入框事件 - 更新为支持多个API
-    document.getElementById('customApiUrl').addEventListener('blur', async function(e) {
-        customApiUrl = e.target.value;
-        localStorage.setItem('customApiUrl', customApiUrl);
-        
-        if (currentApiSource === 'custom' && customApiUrl) {
-            showToast('正在测试API可用性...', 'info');
-            customApiUrls = parseCustomApiUrls();
+    const customApiUrlInput = document.getElementById('customApiUrl');
+    if (customApiUrlInput) {
+        customApiUrlInput.addEventListener('blur', async function(e) {
+            customApiUrl = e.target.value;
+            localStorage.setItem('customApiUrl', customApiUrl);
             
-            // 测试所有配置的API
-            if (customApiUrls.length > 0) {
-                updateSiteStatusWithTest('custom');
-            } else {
-                document.getElementById('siteStatus').innerHTML = 
-                    '<span class="text-gray-500">●</span> 未设置API';
-                showToast('请输入至少一个有效的API地址', 'warning');
+            if (currentApiSource === 'custom' && customApiUrl) {
+                showToast('正在测试API可用性...', 'info');
+                customApiUrls = parseCustomApiUrls();
+                
+                // 测试所有配置的API
+                if (customApiUrls.length > 0) {
+                    updateSiteStatusWithTest('custom');
+                } else {
+                    document.getElementById('siteStatus').innerHTML = 
+                        '<span class="text-gray-500">●</span> 未设置API';
+                    showToast('请输入至少一个有效的API地址', 'warning');
+                }
             }
-        }
-    });
+        });
+    }
 
     // 回车搜索
-    document.getElementById('searchInput').addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-            search();
-        }
-    });
+    const searchInput = document.getElementById('searchInput');
+    if (searchInput) {
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                search();
+            }
+        });
+    } else {
+        console.error("searchInput 未找到");
+    }
 
     // 点击外部关闭设置面板
     document.addEventListener('click', function(e) {
@@ -381,16 +405,16 @@ async function search() {
         resultsDiv.innerHTML = results.map(item => {
             const safeId = item.vod_id ? item.vod_id.toString().replace(/[^\w-]/g, '') : '';
             const safeName = (item.vod_name || '').toString()
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
-                .replace(/"/g, '&quot;');
+                .replace(/</g, '<')
+                .replace(/>/g, '>')
+                .replace(/"/g, '"');
             const sourceInfo = item.source_name ? 
                 `<span class="bg-[#222] text-xs px-2 py-1 rounded-full">${item.source_name}</span>` : '';
             const sourceCode = item.source_code || currentApiSource;
             
             // 添加API URL属性，用于详情获取
             const apiUrlAttr = item.api_url ? 
-                `data-api-url="${item.api_url.replace(/"/g, '&quot;')}"` : '';
+                `data-api-url="${item.api_url.replace(/"/g, '"')}"` : '';
             
             // 重新设计的卡片布局 - 支持更好的封面图显示
             const hasCover = item.vod_pic && item.vod_pic.startsWith('http');
@@ -419,9 +443,9 @@ async function search() {
                                 
                                 <!-- 添加影片元数据 - 使用原始彩色标签样式，但减小间距 -->
                                 <div class="flex flex-wrap gap-1 mb-2">
-                                    ${(item.type_name || '').toString().replace(/</g, '&lt;') ? 
+                                    ${(item.type_name || '').toString().replace(/</g, '<') ? 
                                       `<span class="text-xs py-0.5 px-1.5 rounded bg-opacity-20 bg-blue-500 text-blue-300">
-                                          ${(item.type_name || '').toString().replace(/</g, '&lt;')}
+                                          ${(item.type_name || '').toString().replace(/</g, '<')}
                                       </span>` : ''}
                                     ${(item.vod_year || '') ? 
                                       `<span class="text-xs py-0.5 px-1.5 rounded bg-opacity-20 bg-purple-500 text-purple-300">
@@ -429,7 +453,7 @@ async function search() {
                                       </span>` : ''}
                                 </div>
                                 <p class="text-gray-400 text-xs line-clamp-2">
-                                    ${(item.vod_remarks || '暂无介绍').toString().replace(/</g, '&lt;')}
+                                    ${(item.vod_remarks || '暂无介绍').toString().replace(/</g, '<')}
                                 </p>
                             </div>
                             
@@ -523,7 +547,7 @@ async function showDetails(id, vod_name, sourceCode = currentApiSource) {
                 try {
                     // 确保URL是有效的并且是http或https开头
                     return url && (url.startsWith('http://') || url.startsWith('https://'))
-                        ? url.replace(/"/g, '&quot;')
+                        ? url.replace(/"/g, '"')
                         : '';
                 } catch (e) {
                     return '';
@@ -614,7 +638,7 @@ function renderEpisodes(vodName) {
         // 根据倒序状态计算真实的剧集索引
         const realIndex = episodesReversed ? currentEpisodes.length - 1 - index : index;
         return `
-            <button id="episode-${realIndex}" onclick="playVideo('${episode}','${vodName.replace(/"/g, '&quot;')}', ${realIndex})" 
+            <button id="episode-${realIndex}" onclick="playVideo('${episode}','${vodName.replace(/"/g, '"')}', ${realIndex})" 
                     class="px-4 py-2 bg-[#222] hover:bg-[#333] border border-[#333] rounded-lg transition-colors text-center episode-btn">
                 第${realIndex + 1}集
             </button>
