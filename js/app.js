@@ -1,4 +1,3 @@
-
 // 全局变量
 let currentApiSource = localStorage.getItem('currentApiSource') || 'heimuer';
 let customApiUrl = localStorage.getItem('customApiUrl') || '';
@@ -48,7 +47,12 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('apiSource').value = currentApiSource;
 
     // 初始化显示当前站点代码
-    document.getElementById('currentCode').textContent = currentApiSource;
+    const currentCodeElement = document.getElementById('currentCode');
+    if (currentCodeElement) {
+        currentCodeElement.textContent = currentApiSource;
+    } else {
+        console.error("currentCode 元素未找到");
+    }
     
     // 初始化显示当前站点状态（使用优化后的测试函数）
     updateSiteStatusWithTest(currentApiSource);
@@ -211,7 +215,12 @@ function setupEventListeners() {
         }
         
         localStorage.setItem('currentApiSource', currentApiSource);
-        document.getElementById('currentCode').textContent = currentApiSource;
+        const currentCodeElement = document.getElementById('currentCode');
+        if (currentCodeElement) {
+            currentCodeElement.textContent = currentApiSource;
+        } else {
+            console.error("currentCode 元素未找到");
+        }
         
         // 清理搜索结果并重置搜索区域
         resetSearchArea();
