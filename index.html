@@ -47,7 +47,7 @@
         <div class="flex justify-between items-center mb-6">
             <h3 class="text-xl font-bold gradient-text">
                 设置 
-                <span id="userStatus" class="text-sm text-gray-400">用户: Guest</span>
+                <span id="userStatus" class="text-sm text-gray-400">用户: 未登录</span>
                 <span id="logoutBtn" class="text-sm text-gray-400 cursor-pointer ml-2 hidden" title="退出登录">➜</span>
             </h3>
             <button onclick="toggleSettings()" class="text-gray-400 hover:text-white" aria-label="关闭设置">×</button>
@@ -65,7 +65,7 @@
                 <button onclick="verifyKey()" class="w-full bg-white text-black font-medium rounded-lg px-4 py-2 mt-2 hover:bg-gray-200 transition-colors">
                     验证
                 </button>
-            </div>
+        </div>
 
             <!-- 选择采集站点 (SVIP) -->
             <div id="apiSourceContainer" class="hidden">
