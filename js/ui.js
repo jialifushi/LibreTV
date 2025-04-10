@@ -254,7 +254,7 @@ function initSettings() {
         document.getElementById('yellowFilterSwitch').classList.add('hidden');
         document.getElementById('adFilterSwitch').classList.add('hidden');
         document.getElementById('keyVerification').classList.remove('hidden');
-        document.getElementById('userStatus').textContent = "用户: Guest";
+        document.getElementById('userStatus').textContent = "用户: 未登录";
         logoutBtn.classList.add('hidden');
     }
 }
@@ -338,11 +338,10 @@ function logout() {
     document.getElementById('yellowFilterSwitch').classList.add('hidden');
     document.getElementById('adFilterSwitch').classList.add('hidden');
     document.getElementById('keyVerification').classList.remove('hidden');
-    document.getElementById('userStatus').textContent = "用户: Guest";
+    document.getElementById('userStatus').textContent = "用户: 未登录"; // 修改为“未登录”
     document.getElementById('logoutBtn').classList.add('hidden');
     showToast('已退出登录', 'success');
 }
-
 
 // 页面加载时初始化
 document.addEventListener('DOMContentLoaded', () => {
@@ -354,6 +353,16 @@ document.addEventListener('DOMContentLoaded', () => {
         if (event.key === 'Enter') verifyVipLogin();
     });
     document.getElementById('logoutBtn').addEventListener('click', logout);
+
+    // 添加搜索框回车事件
+    const searchInput = document.getElementById('searchInput');
+    if (searchInput) {
+        searchInput.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                search(); // 调用现有的 search() 函数
+            }
+        });
+    }
 });
 
 // 其他函数
