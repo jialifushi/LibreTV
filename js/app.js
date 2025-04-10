@@ -1,4 +1,4 @@
-、// app.js
+// app.js
 
 // 全局变量
 let currentApiSource = localStorage.getItem('currentApiSource') || 'heimuer';
