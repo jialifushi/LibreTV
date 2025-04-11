@@ -415,16 +415,16 @@ async function search() {
         resultsDiv.innerHTML = results.map(item => {
             const safeId = item.vod_id ? item.vod_id.toString().replace(/[^\w-]/g, '') : '';
             const safeName = (item.vod_name || '').toString()
-                .replace(/</g, '<')
-                .replace(/>/g, '>')
-                .replace(/"/g, '"');
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;');
             const sourceInfo = item.source_name ? 
                 `<span class="bg-[#222] text-xs px-2 py-1 rounded-full">${item.source_name}</span>` : '';
             const sourceCode = item.source_code || currentApiSource;
             
             // 添加API URL属性，用于详情获取
             const apiUrlAttr = item.api_url ? 
-                `data-api-url="${item.api_url.replace(/"/g, '"')}"` : '';
+                `data-api-url="${item.api_url.replace(/"/g, '&quot;')}"` : '';
             
             // 重新设计的卡片布局 - 支持更好的封面图显示
             const hasCover = item.vod_pic && item.vod_pic.startsWith('http');
@@ -453,9 +453,9 @@ async function search() {
                                 
                                 <!-- 添加影片元数据 - 使用原始彩色标签样式，但减小间距 -->
                                 <div class="flex flex-wrap gap-1 mb-2">
-                                    ${(item.type_name || '').toString().replace(/</g, '<') ? 
+                                    ${(item.type_name || '').toString().replace(/</g, '&lt;') ? 
                                       `<span class="text-xs py-0.5 px-1.5 rounded bg-opacity-20 bg-blue-500 text-blue-300">
-                                          ${(item.type_name || '').toString().replace(/</g, '<')}
+                                          ${(item.type_name || '').toString().replace(/</g, '&lt;')}
                                       </span>` : ''}
                                     ${(item.vod_year || '') ? 
                                       `<span class="text-xs py-0.5 px-1.5 rounded bg-opacity-20 bg-purple-500 text-purple-300">
@@ -463,7 +463,7 @@ async function search() {
                                       </span>` : ''}
                                 </div>
                                 <p class="text-gray-400 text-xs line-clamp-2">
-                                    ${(item.vod_remarks || '暂无介绍').toString().replace(/</g, '<')}
+                                    ${(item.vod_remarks || '暂无介绍').toString().replace(/</g, '&lt;')}
                                 </p>
                             </div>
                             
@@ -557,7 +557,7 @@ async function showDetails(id, vod_name, sourceCode = currentApiSource) {
                 try {
                     // 确保URL是有效的并且是http或https开头
                     return url && (url.startsWith('http://') || url.startsWith('https://'))
-                        ? url.replace(/"/g, '"')
+                        ? url.replace(/"/g, '&quot;')
                         : '';
                 } catch (e) {
                     return '';
@@ -648,7 +648,7 @@ function renderEpisodes(vodName) {
         // 根据倒序状态计算真实的剧集索引
         const realIndex = episodesReversed ? currentEpisodes.length - 1 - index : index;
         return `
-            <button id="episode-${realIndex}" onclick="playVideo('${episode}','${vodName.replace(/"/g, '"')}', ${realIndex})" 
+            <button id="episode-${realIndex}" onclick="playVideo('${episode}','${vodName.replace(/"/g, '&quot;')}', ${realIndex})" 
                     class="px-4 py-2 bg-[#222] hover:bg-[#333] border border-[#333] rounded-lg transition-colors text-center episode-btn">
                 第${realIndex + 1}集
             </button>
