@@ -1,5 +1,3 @@
-// app.js
-
 // 全局变量
 let currentApiSource = localStorage.getItem('currentApiSource') || 'heimuer';
 let customApiUrl = localStorage.getItem('customApiUrl') || '';
@@ -268,15 +266,19 @@ function setupEventListeners() {
         });
     }
 
-
     // 回车搜索
-    document.getElementById('searchInput').addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-            search();
-        }
-    });
+    const searchInput = document.getElementById('searchInput');
+    if (searchInput) {
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                console.log("回车键触发，调用 search()");
+                window.search(); // 调用全局 search 函数
+            }
+        });
+    } else {
+        console.error("searchInput 未找到");
+    }
 
-    
     // 点击外部关闭设置面板
     document.addEventListener('click', function(e) {
         const panel = document.getElementById('settingsPanel');
@@ -301,17 +303,6 @@ function setupEventListeners() {
         adFilterToggle.addEventListener('change', function(e) {
             localStorage.setItem(PLAYER_CONFIG.adFilteringStorage, e.target.checked);
         });
-    }
-
-    // 绑定搜索按钮点击事件
-    const searchButton = document.getElementById('searchButton');
-    if (searchButton) {
-        searchButton.addEventListener('click', function() {
-            console.log("搜索按钮点击，调用 search()");
-            search(); // 确保点击按钮触发 search
-        });
-    } else {
-        console.error("searchButton 未找到");
     }
 }
 
@@ -351,7 +342,7 @@ window.search = async function() {
         // 处理自定义API源
         if (currentApiSource === 'custom') {
             // 获取可能包含多个API的字符串
-            customApiUrl = document.getElementById('customApiUrl').value.trim();
+            customApiUrl = document.getElementById('customApiUrl')?.value.trim() || customApiUrl;
             localStorage.setItem('customApiUrl', customApiUrl);
             
             if (!customApiUrl) {
@@ -395,7 +386,7 @@ window.search = async function() {
         const yellowFilterEnabled = localStorage.getItem('yellowFilterEnabled') === 'true';
         let results = data.list;
         if (yellowFilterEnabled) {
-            const banned = ['伦理片', '色情片','福利视频','福利片'];
+            const banned = ['伦理片', '色情片', '福利视频', '福利片'];
             results = results.filter(item => {
                 const typeName = item.type_name || '';
                 return !banned.some(keyword => typeName.includes(keyword));
@@ -690,11 +681,5 @@ function toggleEpisodeOrder() {
     }
 }
 
-// 遗漏函数的占位实现（需根据实际需求完善）
+// 遗漏函数的占位实现（由 ui.js 提供）
 function renderSearchHistory() { console.log("renderSearchHistory 未实现"); }
-function showLoading() { console.log("showLoading 未实现"); }
-function hideLoading() { console.log("hideLoading 未实现"); }
-function updateSiteStatus(isAvailable) { console.log("updateSiteStatus:", isAvailable); }
-function testSiteAvailability(source) { return Promise.resolve(true); } // 示例实现
-function saveSearchHistory(query) { console.log("saveSearchHistory:", query); }
-function showToast(message, type) { console.log(`Toast [${type}]: ${message}`); }
