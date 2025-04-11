@@ -21,8 +21,8 @@
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://libretv.is-an.org/">
     <meta property="twitter:title" content="LibreTV - 免费在线视频搜索与观看平台">
-    <meta property="twitter:description" content="搜索并观看来自多个视频源的内容，支持多种设备，无需注册即可使用。">
-    <meta property="twitter:image" content="https://images.icon-icons.com/38/PNG/512/retrotv_5520.png">
+    <meta property="og:description" content="搜索并观看来自多个视频源的内容，支持多种设备，无需注册即可使用。">
+    <meta property="og:image" content="https://images.icon-icons.com/38/PNG/512/retrotv_5520.png">
 
     <!-- Favicon -->
     <link rel="icon" href="https://images.icon-icons.com/38/PNG/512/retrotv_5520.png">
@@ -176,7 +176,8 @@
                         <input type="text" id="searchInput"
                             class="w-full bg-[#111] border border-[#333] text-white px-6 py-4 rounded-l-lg focus:outline-none focus:border-white transition-colors"
                             placeholder="搜索你喜欢的视频..." aria-label="视频搜索框">
-                        <button id="searchButton" class="px-8 py-4 bg-white text-black font-medium rounded-r-lg hover:bg-gray-200 transition-colors"
+                        <button id="searchButton" onclick="search()"
+                            class="px-8 py-4 bg-white text-black font-medium rounded-r-lg hover:bg-gray-200 transition-colors"
                             aria-label="搜索按钮">
                             搜索
                         </button>
@@ -283,47 +284,6 @@
     <script src="js/ui.js"></script>
     <script src="js/api.js"></script>
     <script src="js/app.js"></script>
-
-    <script>
-    // 确保 searchButton 的事件监听器在 app.js 加载完成后设置
-    document.addEventListener('DOMContentLoaded', function() {
-        const searchButton = document.getElementById('searchButton');
-        if (searchButton) {
-            searchButton.addEventListener('click', function() {
-                // 确保 window.search 存在并且是函数
-                if (typeof window.search === 'function') {
-                    window.search();
-                } else {
-                    console.error("search 函数未定义，请检查 app.js 是否已正确加载");
-                    showToast('搜索功能不可用，请稍后重试', 'error');
-                }
-            });
-        } else {
-            console.error("searchButton 未找到");
-        }
-
-        // 获取搜索框元素
-        const searchInput = document.getElementById('searchInput');
-        if (searchInput) {
-            // 监听回车事件
-            searchInput.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    // 阻止默认行为，例如表单提交
-                    e.preventDefault();
-                    // 确保 window.search 存在并且是函数
-                    if (typeof window.search === 'function') {
-                        window.search();
-                    } else {
-                        console.error("search 函数未定义，请检查 app.js 是否已正确加载");
-                        showToast('搜索功能不可用，请稍后重试', 'error');
-                    }
-                }
-            });
-        } else {
-            console.error("searchInput 未找到");
-        }
-    });
-    </script>
 </body>
 
 </html>
