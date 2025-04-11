@@ -265,6 +265,16 @@ function setupEventListeners() {
             }
         });
     }
+    
+    // --- 添加搜索按钮点击事件监听 ---
+    const searchButton = document.getElementById('searchButton');
+    if (searchButton) {
+        // 直接将定义好的 search 函数作为回调
+        searchButton.addEventListener('click', search); 
+    } else {
+        console.error("Search button element (#searchButton) not found!");
+    }
+    // --- 结束添加 ---
 
     // 回车搜索
     const searchInput = document.getElementById('searchInput');
