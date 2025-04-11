@@ -268,19 +268,15 @@ function setupEventListeners() {
         });
     }
 
-    // 回车搜索
-    const searchInput = document.getElementById('searchInput');
-    if (searchInput) {
-        searchInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                console.log("回车键触发，调用 search()");
-                search(); // 直接调用全局 search 函数
-            }
-        });
-    } else {
-        console.error("searchInput 未找到");
-    }
 
+    // 回车搜索
+    document.getElementById('searchInput').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            search();
+        }
+    });
+
+    
     // 点击外部关闭设置面板
     document.addEventListener('click', function(e) {
         const panel = document.getElementById('settingsPanel');
