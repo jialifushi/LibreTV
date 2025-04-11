@@ -14,18 +14,18 @@
     <meta property="og:url" content="https://libretv.is-an.org/"> <!-- 请确保这是你的网站实际URL -->
     <meta property="og:title" content="LibreTV - 免费在线视频搜索与观看平台">
     <meta property="og:description" content="搜索并观看来自多个视频源的内容，支持多种设备，无需注册即可使用。">
-    <meta property="og:image" content="https://images.icon-icons.com/38/PNG/512/retrotv_5520.png">
+    <meta property="og:image" content="https://images.icon-icons.com/38/PNG/512/retrotv_5520.png"> <!-- 示例图片 -->
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://libretv.is-an.org/"> <!-- 请确保这是你的网站实际URL -->
     <meta property="twitter:title" content="LibreTV - 免费在线视频搜索与观看平台">
     <meta property="twitter:description" content="搜索并观看来自多个视频源的内容，支持多种设备，无需注册即可使用。">
-    <meta property="twitter:image" content="https://images.icon-icons.com/38/PNG/512/retrotv_5520.png">
+    <meta property="twitter:image" content="https://images.icon-icons.com/38/PNG/512/retrotv_5520.png"> <!-- 示例图片 -->
 
     <!-- Favicon -->
-    <link rel="icon" href="https://images.icon-icons.com/38/PNG/512/retrotv_5520.png">
-    <link rel="apple-touch-icon" href="https://images.icon-icons.com/38/PNG/512/retrotv_5520.png">
+    <link rel="icon" href="https://images.icon-icons.com/38/PNG/512/retrotv_5520.png"> <!-- 示例图片 -->
+    <link rel="apple-touch-icon" href="https://images.icon-icons.com/38/PNG/512/retrotv_5520.png"> <!-- 示例图片 -->
 
     <!-- Canonical URL -->
     <link rel="canonical" href="https://libretv.is-an.org/"> <!-- 请确保这是你的网站实际URL -->
@@ -33,35 +33,32 @@
     <!-- Tailwind CSS via CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Custom Styles -->
-    <link rel="stylesheet" href="css/styles.css">
-    <!-- Add custom CSS for page background, gradients, panel animation etc. if not in styles.css -->
+    <link rel="stylesheet" href="css/styles.css"> <!-- 确保包含 page-bg, gradient-text 等 -->
     <style>
-        /* Styles for page background, gradient text etc. */
+        /* 保持最新的页面背景和渐变文本样式 */
         .page-bg { background-color: #0a0a0a; }
-        .gradient-text {
-            background: linear-gradient(to right, #a855f7, #ec4899); /* Purple to Pink */
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
+        .gradient-text { background: linear-gradient(to right, #a855f7, #ec4899); -webkit-background-clip: text; background-clip: text; color: transparent; }
+
         /* Settings panel transition */
         .settings-panel {
-            transform: translateX(100%);
-            transition: transform 0.3s ease-in-out;
+             transform: translateX(100%);
+             transition: transform 0.3s ease-in-out;
         }
         .settings-panel.show {
-            transform: translateX(0);
+             transform: translateX(0);
         }
-        /* Card hover effect */
-         .card-hover:hover {
-             transform: scale(1.02);
-         }
-         /* Ensure line-clamp works */
+        /* Ensure original toggle styles from settings panel work */
+        #settingsPanel .toggle-bg { transition: background-color 0.3s ease-in-out; }
+        #settingsPanel .toggle-dot { transition: transform 0.3s ease-in-out; }
+        #settingsPanel input[type="checkbox"]:checked + .toggle-bg { background-color: #a855f7; /* Match theme purple */ }
+        #settingsPanel input[type="checkbox"]:checked ~ .toggle-dot { transform: translateX(1.5rem); /* 6 units (w-12) - dot width (w-5) - padding */ }
+
+        /* Line Clamp Fallback (if needed) */
         .line-clamp-2 { overflow: hidden; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
     </style>
 </head>
-<body class="page-bg text-white"> <!-- Apply dark theme background -->
-    <!-- Settings Button (Remains styled) -->
+<body class="page-bg text-white"> <!-- 应用最新背景色 -->
+    <!-- Settings Button (保持最新样式) -->
     <div class="fixed top-4 right-4 z-50 flex items-center space-x-4">
         <button onclick="toggleSettings(event)" class="bg-[#222] hover:bg-[#333] border border-[#333] hover:border-white rounded-lg px-4 py-2 transition-colors" aria-label="打开设置">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -71,23 +68,21 @@
         </button>
     </div>
 
-    <!-- Settings Panel (Outer shell styled, INNER content reverted to source) -->
-    <div id="settingsPanel" class="settings-panel fixed right-0 top-0 h-full w-80 bg-[#111] border-l border-[#333] p-6 z-40" aria-label="设置面板" aria-hidden="true">
-        <!-- ======================================================= -->
-        <!-- START: EXACT Source Code for Settings Panel Internals -->
-        <!-- ======================================================= -->
+    <!-- Settings Panel Container (最新样式) -->
+    <div id="settingsPanel" class="settings-panel fixed right-0 top-0 h-full w-80 bg-[#111] border-l border-[#333] p-6 z-40 transform translate-x-full" aria-label="设置面板" aria-hidden="true">
+        <!-- !!! START: Reverted Inner Settings Panel Structure !!! -->
         <div class="flex justify-between items-center mb-6">
-            <!-- Header with original title, status, logout -->
-            <h3 class="text-xl font-bold gradient-text"> <!-- Keep gradient text for title -->
+            <!-- 注意：标题应用了新 gradient-text 类，但内部结构是原始的 -->
+            <h3 class="text-xl font-bold gradient-text">
                 设置
                 <span id="userStatus" class="text-sm text-gray-400">用户: 未登录</span>
-                <span id="logoutBtn" class="text-sm text-gray-400 cursor-pointer ml-2 hidden" title="退出登录" onclick="logout()">➜</span> <!-- Original logout button -->
+                <span id="logoutBtn" class="text-sm text-gray-400 cursor-pointer ml-2 hidden" title="退出登录" onclick="logout()">➜</span> <!-- 使用原始箭头, JS控制显隐和功能 -->
             </h3>
-            <!-- Original close button -->
+             <!-- 关闭按钮使用原始类，无大小指定 -->
             <button onclick="toggleSettings()" class="text-gray-400 hover:text-white" aria-label="关闭设置">×</button>
         </div>
         <div class="space-y-4">
-            <!-- Key Verification Area (Original) -->
+            <!-- 密钥验证区域 (原始) -->
             <div id="keyVerification">
                 <label class="block text-sm font-medium text-gray-400 mb-2">输入密钥以解锁功能</label>
                 <input
@@ -101,7 +96,7 @@
                 </button>
             </div>
 
-            <!-- API Source Selection (SVIP) (Original) -->
+            <!-- 选择采集站点 (SVIP) (原始, JS控制显隐) -->
             <div id="apiSourceContainer" class="hidden">
                 <label class="block text-sm font-medium text-gray-400 mb-2">选择采集站点 (SVIP)</label>
                 <select id="apiSource" class="w-full bg-[#222] border border-[#333] text-white px-3 py-2 rounded-lg focus:outline-none focus:border-white transition-colors">
@@ -115,34 +110,32 @@
                     <option value="cjhw">新华为 (cjhw)</option>
                     <option value="dbzy">豆瓣资源 (dbzy)</option>
                     <option value="jisu">极速资源 (jisu)</option>
-                    <option value="custom" style="display: none;">自定义接口</option> <!-- Original custom option style -->
+                    <!-- 原始自定义接口选项，JS 可能需要处理其显隐和对应输入框 -->
+                    <option value="custom" style="display: none;">自定义接口</option>
                 </select>
-                 <!-- Original Custom API Input (Hidden by style attribute) -->
-                 <div id="customApiInput" class="mt-2 hidden"> <!-- JS should handle removing 'hidden' class -->
-                     <label for="customApiUrl" class="block text-sm font-medium text-gray-400 mb-1">自定义API URL (多个用逗号隔开)</label>
-                     <input type="text" id="customApiUrl" placeholder="输入自定义API地址" class="w-full bg-[#222] border border-[#333] text-white px-3 py-2 rounded-lg focus:outline-none focus:border-white transition-colors">
-                </div>
+                 <!-- 原始代码没有单独的自定义API输入框容器，JS需要处理 -->
             </div>
 
-            <!-- Yellow Content Filter (VIP) (Original) -->
+            <!-- 黄色内容过滤 (VIP) (原始, JS控制显隐) -->
             <div id="yellowFilterContainer" class="hidden">
                 <div class="flex items-center justify-between">
                     <label class="text-sm font-medium text-gray-400">黄色内容过滤 (VIP)</label>
+                     <!-- 原始开关结构 -->
                     <div id="yellowFilterSwitch" class="relative inline-block w-12 align-middle select-none hidden">
                         <input type="checkbox" id="yellowFilterToggle" class="opacity-0 absolute w-full h-full cursor-pointer z-10" checked>
                         <div class="toggle-bg bg-[#333] w-12 h-6 rounded-full transition-colors duration-300 ease-in-out"></div>
                         <div class="toggle-dot absolute w-5 h-5 bg-white rounded-full top-0.5 left-0.5 transition-transform duration-300 ease-in-out"></div>
                     </div>
-                    <span id="vipLogin" class="text-sm text-blue-400 cursor-pointer">VIP未登录</span>
+                    <span id="vipLogin" class="text-sm text-blue-400 cursor-pointer">VIP未登录</span> <!-- 原始样式, JS控制文本和点击 -->
                 </div>
                 <p class="text-xs text-gray-500 mt-1">过滤分类包含"伦理片"、"色情片"等成人内容</p>
             </div>
 
-            <!-- Ad Filter (Guest) (Original) -->
-            <!-- Note: Original code didn't have an outer container ID like 'adFilterContainer', only the switch ID -->
-            <div> <!-- Original didn't have specific ID for this container -->
+            <!-- 分片广告过滤 (Guest) (原始, JS控制显隐) -->
+            <div> <!-- 原始代码无 adFilterContainer ID -->
                 <div class="flex items-center justify-between">
                     <label class="text-sm font-medium text-gray-400">分片广告过滤 (Guest)</label>
+                     <!-- 原始开关结构 -->
                     <div id="adFilterSwitch" class="relative inline-block w-12 align-middle select-none hidden">
                         <input type="checkbox" id="adFilterToggle" class="opacity-0 absolute w-full h-full cursor-pointer z-10">
                         <div class="toggle-bg bg-[#333] w-12 h-6 rounded-full transition-colors duration-300 ease-in-out"></div>
@@ -152,20 +145,18 @@
                 <p class="text-xs text-gray-500 mt-1">关闭可减少旧版浏览器播放卡顿问题</p>
             </div>
 
-            <!-- Site Status Display (Original) -->
+            <!-- 当前站点信息 (原始) -->
             <div class="mt-4">
                 <p class="text-xs text-gray-500">当前站点代码：
-                    <span id="currentCode" class="text-white"></span> <!-- JS updates this -->
-                    <span id="siteStatus" class="ml-2"></span> <!-- JS updates this -->
+                    <span id="currentCode" class="text-white"></span> <!-- JS 填充 -->
+                    <span id="siteStatus" class="ml-2"></span> <!-- JS 填充 -->
                 </p>
             </div>
         </div>
-        <!-- ===================================================== -->
-        <!-- END: EXACT Source Code for Settings Panel Internals -->
-        <!-- ===================================================== -->
+        <!-- !!! END: Reverted Inner Settings Panel Structure !!! -->
     </div>
 
-    <!-- VIP/SVIP Login Modal (Remains styled) -->
+    <!-- VIP/SVIP Login Modal (最新样式) -->
     <div id="vipModal" class="fixed inset-0 bg-black/80 hidden flex items-center justify-center z-50">
         <div class="bg-[#111] p-6 rounded-lg border border-[#333] w-96 shadow-xl">
             <div class="flex justify-between items-center mb-4">
@@ -179,11 +170,10 @@
         </div>
     </div>
 
-
-    <!-- Main Content Area (Remains styled) -->
+    <!-- Main Content Area (最新样式) -->
     <div class="container mx-auto px-4 py-8 flex flex-col min-h-screen">
         <div class="flex-1 flex flex-col">
-            <!-- Header -->
+            <!-- Header: Logo and Slogan (最新样式) -->
             <header class="text-center mb-6">
                 <div class="flex justify-center items-center mb-3">
                     <svg class="w-10 h-10 mr-2 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -194,7 +184,7 @@
                 <p class="text-gray-400">自由观影，畅享精彩</p>
             </header>
 
-            <!-- Search Area -->
+            <!-- Search Area (最新样式) -->
             <div id="searchArea" class="flex-1 flex flex-col items-center justify-center transition-all duration-500 ease-in-out">
                 <h2 class="text-3xl font-bold gradient-text mb-6">视频搜索</h2>
                 <div class="w-full max-w-2xl">
@@ -204,6 +194,7 @@
                                class="w-full bg-[#111] border border-[#333] text-white px-6 py-4 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-colors"
                                placeholder="搜索电影、电视剧、动漫、综艺..."
                                aria-label="视频搜索框">
+                        <!-- Search Button (最新样式，带图标) -->
                         <button id="searchButton" onclick="search()"
                                 class="px-6 py-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-medium rounded-r-lg hover:from-purple-600 hover:to-pink-600 transition-all flex items-center justify-center"
                                 aria-label="搜索按钮">
@@ -211,39 +202,47 @@
                             搜索
                         </button>
                     </div>
+
+                    <!-- Recent Searches Area (最新样式) -->
                     <div id="recentSearchesContainer" class="mt-4" aria-label="最近搜索记录">
-                         <div id="recentSearches" class="flex flex-wrap gap-2"></div>
-                        <div id="clearHistoryBtnContainer" class="mt-2 text-right hidden">
-                            <button onclick="clearSearchHistory()" class="text-gray-500 text-xs hover:text-white transition-colors" aria-label="清除搜索历史">清除历史</button>
+                         <div id="recentSearches" class="flex flex-wrap gap-2">
+                            <!-- JS 填充历史记录 -->
+                        </div>
+                         <div id="clearHistoryBtnContainer" class="mt-2 text-right hidden">
+                            <button onclick="clearSearchHistory()" class="text-gray-500 text-xs hover:text-white transition-colors" aria-label="清除搜索历史">
+                                清除历史
+                            </button>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Results Area -->
+            <!-- Results Area (最新样式) -->
             <div id="resultsArea" class="w-full hidden mt-8">
-                <div id="results" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4"></div>
+                <div id="results" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+                    <!-- JS 填充搜索结果 -->
+                </div>
                 <div id="noResultsMessage" class="hidden col-span-full text-center py-16">
-                     <svg class="mx-auto h-12 w-12 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                     <svg class="mx-auto h-12 w-12 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /> </svg>
                     <h3 class="mt-2 text-lg font-medium text-gray-400">没有找到匹配的结果</h3>
                     <p class="mt-1 text-sm text-gray-500">请尝试其他关键词或更换数据源</p>
                 </div>
             </div>
-        </div>
+        </div> <!-- End flex-1 flex flex-col -->
 
-        <!-- Footer -->
+        <!-- Footer Area (最新样式) -->
         <footer class="footer mt-auto py-6 border-t border-[#333] bg-[#0a0a0a]">
             <div class="container mx-auto px-4">
                 <div class="flex flex-col md:flex-row justify-between items-center text-center md:text-left">
                     <div class="mb-4 md:mb-0">
                         <div class="flex items-center justify-center md:justify-start mb-2">
-                            <svg class="w-6 h-6 mr-2 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                            <svg class="w-6 h-6 mr-2 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path> </svg>
                             <span class="gradient-text font-bold">LibreTV</span>
                         </div>
                         <p class="text-gray-500 text-sm">© 2025 LibreTV - 自由观影，畅享精彩</p>
                     </div>
                     <div class="text-center md:text-right">
-                        <p class="text-gray-500 text-sm max-w-md mb-2">免责声明：本站仅为视频搜索聚合工具，不存储、上传或制作任何视频内容...</p>
+                        <p class="text-gray-500 text-sm max-w-md mb-2"> 免责声明：本站仅为视频搜索聚合工具，不存储、上传或制作任何视频内容。 所有内容均来自第三方分享站点，其合法性由来源站点负责。如有侵权，请联系源站点处理。 </p>
                         <div class="flex justify-center md:justify-end space-x-4">
                             <a href="about.html" class="text-gray-400 hover:text-white text-sm transition-colors">关于我们</a>
                             <a href="privacy.html" class="text-gray-400 hover:text-white text-sm transition-colors">隐私政策</a>
@@ -252,9 +251,9 @@
                 </div>
             </div>
         </footer>
-    </div>
+    </div> <!-- End container -->
 
-    <!-- Details Modal (Remains styled) -->
+    <!-- Details Modal (最新样式) -->
     <div id="modal" class="fixed inset-0 bg-black/90 hidden items-center justify-center z-50 p-4 transition-opacity duration-300">
         <div class="bg-[#111] p-6 rounded-lg w-full max-w-4xl border border-[#333] max-h-[90vh] flex flex-col shadow-xl">
             <div class="flex justify-between items-center mb-4 flex-none">
@@ -262,24 +261,26 @@
                 <button onclick="closeModal()" class="text-gray-400 hover:text-white text-3xl transition-colors" aria-label="关闭详情">×</button>
             </div>
             <div id="modalContent" class="overflow-y-auto flex-1 min-h-0 pr-2">
-                 <div id="episodeControls" class="flex justify-end mb-3">
+                <div id="episodeControls" class="flex justify-end mb-3">
                      <button onclick="toggleEpisodeOrder()" class="px-3 py-1.5 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white text-xs font-semibold rounded-full shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5 flex items-center justify-center space-x-1">
-                        <svg id="episodeOrderIcon" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transition-transform duration-300" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v3.586L7.707 9.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 10.586V7z" clip-rule="evenodd" /></svg>
+                        <svg id="episodeOrderIcon" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transition-transform duration-300" viewBox="0 0 20 20" fill="currentColor"> <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v3.586L7.707 9.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 10.586V7z" clip-rule="evenodd" /> </svg>
                         <span id="episodeOrderText">倒序</span>
                     </button>
                 </div>
-                <div id="episodesGrid" class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2"></div>
-                <div id="noEpisodesMessage" class="hidden text-center text-gray-400 py-8">没有找到可播放的视频源</div>
+                <div id="episodesGrid" class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2">
+                    <!-- JS 填充剧集按钮 -->
+                </div>
+                <div id="noEpisodesMessage" class="hidden text-center text-gray-400 py-8"> 没有找到可播放的视频源 </div>
             </div>
         </div>
     </div>
 
-    <!-- Toast Notification (Remains styled) -->
+    <!-- Toast Notification (最新样式) -->
     <div id="toast" class="fixed top-4 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded-lg shadow-lg text-white z-[70] transition-all duration-300 opacity-0 -translate-y-full" role="alert">
         <p id="toastMessage"></p>
     </div>
 
-    <!-- Loading Indicator (Remains styled) -->
+    <!-- Loading Indicator (最新样式) -->
     <div id="loading" class="fixed inset-0 bg-black/70 hidden items-center justify-center z-[60]">
         <div class="bg-[#111] p-6 rounded-lg border border-[#333] flex items-center space-x-4 shadow-lg">
             <div class="w-8 h-8 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
@@ -306,10 +307,10 @@
     }
     </script>
 
-    <!-- JavaScript Files (Remain at the end) -->
+    <!-- JavaScript Files -->
     <script src="js/config.js"></script>
     <script src="js/ui.js"></script>
-    <script src="js/api.js"></script> <!-- If api logic is separate -->
+    <script src="js/api.js"></script> <!-- 确保此文件存在或逻辑在 app.js 中 -->
     <script src="js/app.js"></script>
 
 </body>
