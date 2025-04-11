@@ -26,24 +26,38 @@ function parseCustomApiUrls() {
 document.addEventListener('DOMContentLoaded', function() {
     // 初始化时检查是否使用自定义接口
     if (currentApiSource === 'custom') {
-        document.getElementById('customApiInput').classList.remove('hidden');
+        const customApiInput = document.getElementById('customApiInput');
+        if (customApiInput) {
+            customApiInput.classList.remove('hidden');
             document.getElementById('customApiUrl').value = customApiUrl;
             customApiUrls = parseCustomApiUrls();
-
+        }
     }
 
     // 设置 select 的默认选中值
-    document.getElementById('apiSource').value = currentApiSource;
-
+    const apiSourceSelect = document.getElementById('apiSource');
+    if (apiSourceSelect) {
+        apiSourceSelect.value = currentApiSource;
+    } else {
+        console.error("apiSource 元素未找到");
+    }
 
     // 初始化显示当前站点代码
-    document.getElementById('currentCode').textContent = currentApiSource;
-
+    let currentCodeElement = document.getElementById('currentCode'); // 使用 let 避免重复声明
+    if (currentCodeElement) {
+        currentCodeElement.textContent = currentApiSource || '未设置';
+    } else {
+        console.error("currentCode 元素未找到");
+    }
     
     // 初始化显示当前站点状态
-
+    const siteStatusElement = document.getElementById('siteStatus');
+    if (siteStatusElement) {
+        siteStatusElement.innerHTML = '<span class="text-gray-500">●</span> 初始化中...';
         updateSiteStatusWithTest(currentApiSource);
-
+    } else {
+        console.error("siteStatus 元素未找到");
+    }
     
     // 渲染搜索历史
     renderSearchHistory();
@@ -66,14 +80,15 @@ document.addEventListener('DOMContentLoaded', function() {
 // 带有超时和缓存的站点可用性测试
 async function updateSiteStatusWithTest(source) {
     // 显示加载状态
-    document.getElementById('siteStatus').innerHTML = '<span class="text-gray-500">●</span> 测试中...';
+    const siteStatus = document.getElementById('siteStatus');
+    if (siteStatus) siteStatus.innerHTML = '<span class="text-gray-500">●</span> 测试中...';
     
     // 自定义API源特殊处理 - 测试所有提供的API
     if (source === 'custom') {
         const urls = parseCustomApiUrls();
         if (urls.length === 0) {
             updateSiteStatus(false);
-            document.getElementById('siteStatus').innerHTML = '<span class="text-gray-500">●</span> 未设置API';
+            if (siteStatus) siteStatus.innerHTML = '<span class="text-gray-500">●</span> 未设置API';
             return;
         }
         
@@ -85,11 +100,11 @@ async function updateSiteStatusWithTest(source) {
         const availableCount = results.filter(r => r).length;
         if (availableCount > 0) {
             updateSiteStatus(true);
-            document.getElementById('siteStatus').innerHTML = 
+            if (siteStatus) siteStatus.innerHTML = 
                 `<span class="text-green-500">●</span> ${availableCount}/${urls.length} 可用`;
         } else {
             updateSiteStatus(false);
-            document.getElementById('siteStatus').innerHTML = 
+            if (siteStatus) siteStatus.innerHTML = 
                 `<span class="text-red-500">●</span> 全部不可用`;
         }
         return;
@@ -195,27 +210,33 @@ async function testCustomApiUrl(url) {
 // 设置事件监听器
 function setupEventListeners() {
     // API源选择变更事件
-    document.getElementById('apiSource').addEventListener('change', async function(e) {
+    const apiSource = document.getElementById('apiSource');
+    if (apiSource) {
+        apiSource.addEventListener('change', async function(e) {
             currentApiSource = e.target.value;
             const customApiInput = document.getElementById('customApiInput');
             
             if (currentApiSource === 'custom') {
-                customApiInput.classList.remove('hidden');
+                customApiInput?.classList.remove('hidden');
                 customApiUrl = document.getElementById('customApiUrl').value;
                 localStorage.setItem('customApiUrl', customApiUrl);
                 customApiUrls = parseCustomApiUrls();
                 // 自定义接口不立即测试可用性
                 document.getElementById('siteStatus').innerHTML = '<span class="text-gray-500">●</span> 待测试';
             } else {
-                customApiInput.classList.add('hidden');
+                customApiInput?.classList.add('hidden');
                 // 非自定义接口立即测试可用性
                 showToast('正在测试站点可用性...', 'info');
                 updateSiteStatusWithTest(currentApiSource);
             }
             
             localStorage.setItem('currentApiSource', currentApiSource);
-        document.getElementById('currentCode').textContent = currentApiSource;
-
+            const currentCodeElement = document.getElementById('currentCode');
+            if (currentCodeElement) {
+                currentCodeElement.textContent = currentApiSource;
+            } else {
+                console.error("currentCode 元素未找到");
+            }
             
             // 清理搜索结果并重置搜索区域
             resetSearchArea();
@@ -223,7 +244,9 @@ function setupEventListeners() {
     }
 
     // 自定义接口输入框事件 - 更新为支持多个API
-    document.getElementById('customApiUrl').addEventListener('blur', async function(e) {
+    const customApiUrlInput = document.getElementById('customApiUrl');
+    if (customApiUrlInput) {
+        customApiUrlInput.addEventListener('blur', async function(e) {
             customApiUrl = e.target.value;
             localStorage.setItem('customApiUrl', customApiUrl);
             
