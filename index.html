@@ -34,23 +34,15 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Custom Styles -->
     <link rel="stylesheet" href="css/styles.css">
-    <!-- Add custom CSS for toggle switches if not using a JS library -->
+    <!-- Add custom CSS for page background, gradients, panel animation etc. if not in styles.css -->
     <style>
-        /* Simple toggle switch styling */
-        .toggle-checkbox:checked {
-            right: 0;
-            border-color: #a855f7; /* Purple accent */
-            transform: translateX(100%); /* Move the dot */
-        }
-        .toggle-checkbox:checked + .toggle-label {
-            background-color: #a855f7; /* Purple accent */
-        }
-        .toggle-checkbox {
-            transition: transform 0.2s ease-in-out;
-            transform: translateX(0);
-        }
-        .toggle-label {
-             transition: background-color 0.2s ease-in-out;
+        /* Styles for page background, gradient text etc. */
+        .page-bg { background-color: #0a0a0a; }
+        .gradient-text {
+            background: linear-gradient(to right, #a855f7, #ec4899); /* Purple to Pink */
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
         }
         /* Settings panel transition */
         .settings-panel {
@@ -61,47 +53,15 @@
             transform: translateX(0);
         }
         /* Card hover effect */
-        .card-hover:hover {
-            transform: scale(1.02);
-            box-shadow: 0 10px 15px -3px rgba(168, 85, 247, 0.2), 0 4px 6px -2px rgba(168, 85, 247, 0.1); /* Purple shadow */
-        }
-         /* Gradient Text */
-        .gradient-text {
-            background: linear-gradient(to right, #a855f7, #ec4899); /* Purple to Pink */
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-        /* Page Background */
-        .page-bg {
-            background-color: #0a0a0a; /* Very dark background */
-        }
-        /* Search tag styling */
-        .search-tag {
-             background-color: #222;
-             color: #a0aec0; /* Gray-400 */
-             padding: 4px 8px;
-             border-radius: 9999px; /* pill shape */
-             font-size: 0.75rem; /* text-xs */
-             margin-right: 4px; /* gap simulation */
-             margin-bottom: 4px; /* gap simulation */
-             border: 1px solid #333;
-             transition: background-color 0.2s, color 0.2s;
-             cursor: pointer;
-        }
-        .search-tag:hover {
-             background-color: #333;
-             color: white;
-        }
-        /* Ensure line-clamp works */
-        .line-clamp-1 { overflow: hidden; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 1; }
+         .card-hover:hover {
+             transform: scale(1.02);
+         }
+         /* Ensure line-clamp works */
         .line-clamp-2 { overflow: hidden; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
-        .line-clamp-3 { overflow: hidden; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; }
-
     </style>
 </head>
-<body class="page-bg text-white">
-    <!-- Settings Button -->
+<body class="page-bg text-white"> <!-- Apply dark theme background -->
+    <!-- Settings Button (Remains styled) -->
     <div class="fixed top-4 right-4 z-50 flex items-center space-x-4">
         <button onclick="toggleSettings(event)" class="bg-[#222] hover:bg-[#333] border border-[#333] hover:border-white rounded-lg px-4 py-2 transition-colors" aria-label="打开设置">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -111,36 +71,40 @@
         </button>
     </div>
 
-    <!-- Settings Panel (Original Structure with new styles) -->
+    <!-- Settings Panel (Outer shell styled, INNER content reverted to source) -->
     <div id="settingsPanel" class="settings-panel fixed right-0 top-0 h-full w-80 bg-[#111] border-l border-[#333] p-6 z-40" aria-label="设置面板" aria-hidden="true">
+        <!-- ======================================================= -->
+        <!-- START: EXACT Source Code for Settings Panel Internals -->
+        <!-- ======================================================= -->
         <div class="flex justify-between items-center mb-6">
-            <h3 class="text-xl font-bold gradient-text">
+            <!-- Header with original title, status, logout -->
+            <h3 class="text-xl font-bold gradient-text"> <!-- Keep gradient text for title -->
                 设置
-                <span id="userStatus" class="text-sm text-gray-400 ml-2">用户: 未登录</span>
-                <span id="logoutBtn" class="text-sm text-red-400 cursor-pointer ml-2 hidden hover:text-red-300" title="退出登录" onclick="logout()">退出</span>
+                <span id="userStatus" class="text-sm text-gray-400">用户: 未登录</span>
+                <span id="logoutBtn" class="text-sm text-gray-400 cursor-pointer ml-2 hidden" title="退出登录" onclick="logout()">➜</span> <!-- Original logout button -->
             </h3>
-            <button onclick="toggleSettings()" class="text-gray-400 hover:text-white text-2xl" aria-label="关闭设置">×</button>
+            <!-- Original close button -->
+            <button onclick="toggleSettings()" class="text-gray-400 hover:text-white" aria-label="关闭设置">×</button>
         </div>
         <div class="space-y-4">
-            <!-- Key Verification Area -->
+            <!-- Key Verification Area (Original) -->
             <div id="keyVerification">
-                <label for="keyInput" class="block text-sm font-medium text-gray-400 mb-2">输入密钥以解锁功能</label>
+                <label class="block text-sm font-medium text-gray-400 mb-2">输入密钥以解锁功能</label>
                 <input
                     type="password"
                     id="keyInput"
-                    class="w-full bg-[#222] border border-[#333] text-white px-3 py-2 rounded-lg focus:outline-none focus:border-purple-500 transition-colors"
-                    placeholder="输入 Guest 密钥"
+                    class="w-full bg-[#222] border border-[#333] text-white px-3 py-2 rounded-lg focus:outline-none focus:border-white transition-colors"
+                    placeholder="输入密钥"
                 >
                 <button onclick="verifyKey()" class="w-full bg-white text-black font-medium rounded-lg px-4 py-2 mt-2 hover:bg-gray-200 transition-colors">
                     验证
                 </button>
-                 <p class="text-xs text-gray-500 mt-1">验证后可使用过滤功能及登录VIP/SVIP。</p>
             </div>
 
-            <!-- API Source Selection (SVIP) -->
+            <!-- API Source Selection (SVIP) (Original) -->
             <div id="apiSourceContainer" class="hidden">
-                <label for="apiSource" class="block text-sm font-medium text-gray-400 mb-2">选择采集站点 (SVIP)</label>
-                <select id="apiSource" class="w-full bg-[#222] border border-[#333] text-white px-3 py-2 rounded-lg focus:outline-none focus:border-purple-500 transition-colors">
+                <label class="block text-sm font-medium text-gray-400 mb-2">选择采集站点 (SVIP)</label>
+                <select id="apiSource" class="w-full bg-[#222] border border-[#333] text-white px-3 py-2 rounded-lg focus:outline-none focus:border-white transition-colors">
                     <option value="aggregated">聚合搜索 (所有源)</option>
                     <option value="heimuer" selected>黑木耳影视 (heimuer)</option>
                     <option value="ffzy">非凡影视 (ffzy)</option>
@@ -151,71 +115,75 @@
                     <option value="cjhw">新华为 (cjhw)</option>
                     <option value="dbzy">豆瓣资源 (dbzy)</option>
                     <option value="jisu">极速资源 (jisu)</option>
-                    <option value="custom">自定义接口</option> <!-- Always visible, controlled by logic -->
+                    <option value="custom" style="display: none;">自定义接口</option> <!-- Original custom option style -->
                 </select>
-                <!-- Custom API Input (Hidden by default, shown when 'custom' selected) -->
-                 <div id="customApiInput" class="mt-2 hidden">
+                 <!-- Original Custom API Input (Hidden by style attribute) -->
+                 <div id="customApiInput" class="mt-2 hidden"> <!-- JS should handle removing 'hidden' class -->
                      <label for="customApiUrl" class="block text-sm font-medium text-gray-400 mb-1">自定义API URL (多个用逗号隔开)</label>
-                     <input type="text" id="customApiUrl" placeholder="http://example.com/api.php/provide/vod/" class="w-full bg-[#222] border border-[#333] text-white px-3 py-2 rounded-lg focus:outline-none focus:border-purple-500 transition-colors">
-                 </div>
+                     <input type="text" id="customApiUrl" placeholder="输入自定义API地址" class="w-full bg-[#222] border border-[#333] text-white px-3 py-2 rounded-lg focus:outline-none focus:border-white transition-colors">
+                </div>
             </div>
 
-            <!-- Yellow Content Filter (VIP/SVIP - original structure) -->
+            <!-- Yellow Content Filter (VIP) (Original) -->
             <div id="yellowFilterContainer" class="hidden">
                 <div class="flex items-center justify-between">
-                    <label for="yellowFilterToggle" class="text-sm font-medium text-gray-400">黄色内容过滤 (VIP/SVIP)</label>
-                    <!-- Toggle switch container -->
-                    <div id="yellowFilterSwitch" class="relative inline-block w-10 align-middle select-none transition duration-200 ease-in hidden">
-                         <input type="checkbox" id="yellowFilterToggle" class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-2 appearance-none cursor-pointer border-[#333]" checked/>
-                         <label for="yellowFilterToggle" class="toggle-label block overflow-hidden h-5 rounded-full bg-[#333] cursor-pointer"></label>
+                    <label class="text-sm font-medium text-gray-400">黄色内容过滤 (VIP)</label>
+                    <div id="yellowFilterSwitch" class="relative inline-block w-12 align-middle select-none hidden">
+                        <input type="checkbox" id="yellowFilterToggle" class="opacity-0 absolute w-full h-full cursor-pointer z-10" checked>
+                        <div class="toggle-bg bg-[#333] w-12 h-6 rounded-full transition-colors duration-300 ease-in-out"></div>
+                        <div class="toggle-dot absolute w-5 h-5 bg-white rounded-full top-0.5 left-0.5 transition-transform duration-300 ease-in-out"></div>
                     </div>
-                    <span id="vipLogin" class="text-sm text-blue-400 cursor-pointer hover:text-blue-300">VIP/SVIP登录</span>
+                    <span id="vipLogin" class="text-sm text-blue-400 cursor-pointer">VIP未登录</span>
                 </div>
                 <p class="text-xs text-gray-500 mt-1">过滤分类包含"伦理片"、"色情片"等成人内容</p>
             </div>
 
-            <!-- Ad Filter (Guest+ - original structure) -->
-            <div id="adFilterContainer" class="hidden"> <!-- Renamed from original '分片广告过滤 (Guest)' section -->
-                 <div class="flex items-center justify-between">
-                     <label for="adFilterToggle" class="text-sm font-medium text-gray-400">分片广告过滤 (Guest+)</label>
-                     <!-- Toggle switch container -->
-                     <div id="adFilterSwitch" class="relative inline-block w-10 align-middle select-none transition duration-200 ease-in">
-                          <input type="checkbox" id="adFilterToggle" class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-2 appearance-none cursor-pointer border-[#333]"/>
-                          <label for="adFilterToggle" class="toggle-label block overflow-hidden h-5 rounded-full bg-[#333] cursor-pointer"></label>
-                     </div>
-                 </div>
-                 <p class="text-xs text-gray-500 mt-1">实验性功能，尝试过滤播放器广告</p>
+            <!-- Ad Filter (Guest) (Original) -->
+            <!-- Note: Original code didn't have an outer container ID like 'adFilterContainer', only the switch ID -->
+            <div> <!-- Original didn't have specific ID for this container -->
+                <div class="flex items-center justify-between">
+                    <label class="text-sm font-medium text-gray-400">分片广告过滤 (Guest)</label>
+                    <div id="adFilterSwitch" class="relative inline-block w-12 align-middle select-none hidden">
+                        <input type="checkbox" id="adFilterToggle" class="opacity-0 absolute w-full h-full cursor-pointer z-10">
+                        <div class="toggle-bg bg-[#333] w-12 h-6 rounded-full transition-colors duration-300 ease-in-out"></div>
+                        <div class="toggle-dot absolute w-5 h-5 bg-white rounded-full top-0.5 left-0.5 transition-transform duration-300 ease-in-out"></div>
+                    </div>
+                </div>
+                <p class="text-xs text-gray-500 mt-1">关闭可减少旧版浏览器播放卡顿问题</p>
             </div>
 
-            <!-- Site Status Display (original structure) -->
+            <!-- Site Status Display (Original) -->
             <div class="mt-4">
                 <p class="text-xs text-gray-500">当前站点代码：
-                    <span id="currentCode" class="text-white font-semibold">heimuer</span>
-                    <span id="siteStatus" class="ml-2 text-gray-500">● 初始化中...</span>
+                    <span id="currentCode" class="text-white"></span> <!-- JS updates this -->
+                    <span id="siteStatus" class="ml-2"></span> <!-- JS updates this -->
                 </p>
             </div>
         </div>
+        <!-- ===================================================== -->
+        <!-- END: EXACT Source Code for Settings Panel Internals -->
+        <!-- ===================================================== -->
     </div>
 
-    <!-- VIP/SVIP Login Modal -->
+    <!-- VIP/SVIP Login Modal (Remains styled) -->
     <div id="vipModal" class="fixed inset-0 bg-black/80 hidden flex items-center justify-center z-50">
         <div class="bg-[#111] p-6 rounded-lg border border-[#333] w-96 shadow-xl">
             <div class="flex justify-between items-center mb-4">
                 <h3 class="text-xl font-bold gradient-text">VIP/SVIP 登录</h3>
                  <button onclick="closeVipModal()" class="text-gray-400 hover:text-white text-2xl" aria-label="关闭登录框">×</button>
             </div>
-            <input type="text" id="vipUsername" class="w-full bg-[#222] border border-[#333] text-white px-3 py-2 rounded-lg mb-4 focus:outline-none focus:border-purple-500 transition-colors" placeholder="用户名">
-            <input type="password" id="vipPassword" class="w-full bg-[#222] border border-[#333] text-white px-3 py-2 rounded-lg mb-4 focus:outline-none focus:border-purple-500 transition-colors" placeholder="密码">
+            <input type="text" id="vipUsername" class="w-full bg-[#222] border border-[#333] text-white px-3 py-2 rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-colors" placeholder="用户名">
+            <input type="password" id="vipPassword" class="w-full bg-[#222] border border-[#333] text-white px-3 py-2 rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-colors" placeholder="密码">
             <button onclick="verifyVipLogin()" class="w-full bg-white text-black font-medium rounded-lg px-4 py-2 hover:bg-gray-200 transition-colors">登录</button>
-            <button onclick="closeVipModal()" class="w-full text-gray-400 mt-2 hover:text-white">取消</button>
+            <button onclick="closeVipModal()" class="w-full text-gray-400 mt-2 hover:text-white transition-colors">取消</button>
         </div>
     </div>
 
 
-    <!-- Main Content Area -->
+    <!-- Main Content Area (Remains styled) -->
     <div class="container mx-auto px-4 py-8 flex flex-col min-h-screen">
         <div class="flex-1 flex flex-col">
-            <!-- Header: Logo and Slogan -->
+            <!-- Header -->
             <header class="text-center mb-6">
                 <div class="flex justify-center items-center mb-3">
                     <svg class="w-10 h-10 mr-2 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -226,18 +194,16 @@
                 <p class="text-gray-400">自由观影，畅享精彩</p>
             </header>
 
-            <!-- Search Area: Centered by default, moves up on results -->
-             <!-- Search Area: Original Structure -->
+            <!-- Search Area -->
             <div id="searchArea" class="flex-1 flex flex-col items-center justify-center transition-all duration-500 ease-in-out">
-                <h2 class="text-3xl font-bold gradient-text mb-8">视频搜索</h2>
+                <h2 class="text-3xl font-bold gradient-text mb-6">视频搜索</h2>
                 <div class="w-full max-w-2xl">
                     <div class="flex shadow-lg">
                         <input type="text"
                                id="searchInput"
                                class="w-full bg-[#111] border border-[#333] text-white px-6 py-4 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-colors"
-                               placeholder="搜索你喜欢的视频..."
+                               placeholder="搜索电影、电视剧、动漫、综艺..."
                                aria-label="视频搜索框">
-                         <!-- Search button with icon -->
                         <button id="searchButton" onclick="search()"
                                 class="px-6 py-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-medium rounded-r-lg hover:from-purple-600 hover:to-pink-600 transition-all flex items-center justify-center"
                                 aria-label="搜索按钮">
@@ -245,60 +211,40 @@
                             搜索
                         </button>
                     </div>
-
-                    <!-- Recent Searches Area (Original Structure) -->
                     <div id="recentSearchesContainer" class="mt-4" aria-label="最近搜索记录">
-                        <div id="recentSearches" class="flex flex-wrap gap-2">
-                            <!-- Recent search tags will be inserted here by JS -->
-                            <!-- Example tag: <button class="search-tag">电影</button> -->
-                        </div>
-                         <!-- Clear History Button (conditionally shown, original structure) -->
+                         <div id="recentSearches" class="flex flex-wrap gap-2"></div>
                         <div id="clearHistoryBtnContainer" class="mt-2 text-right hidden">
-                            <button onclick="clearSearchHistory()" class="text-gray-500 text-xs hover:text-white transition-colors" aria-label="清除搜索历史">
-                                清除搜索历史
-                            </button>
+                            <button onclick="clearSearchHistory()" class="text-gray-500 text-xs hover:text-white transition-colors" aria-label="清除搜索历史">清除历史</button>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Results Area: Initially hidden -->
+            <!-- Results Area -->
             <div id="resultsArea" class="w-full hidden mt-8">
-                <div id="results" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-                    <!-- Search results will be inserted here by JS -->
-                </div>
-                 <!-- No Results Message Placeholder -->
+                <div id="results" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4"></div>
                 <div id="noResultsMessage" class="hidden col-span-full text-center py-16">
-                     <svg class="mx-auto h-12 w-12 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                              d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
+                     <svg class="mx-auto h-12 w-12 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                     <h3 class="mt-2 text-lg font-medium text-gray-400">没有找到匹配的结果</h3>
                     <p class="mt-1 text-sm text-gray-500">请尝试其他关键词或更换数据源</p>
                 </div>
             </div>
-        </div> <!-- End flex-1 flex flex-col -->
+        </div>
 
-        <!-- Footer Area (Original structure with new styles) -->
-        <footer class="footer mt-8 py-6 border-t border-[#333] bg-[#0a0a0a]">
+        <!-- Footer -->
+        <footer class="footer mt-auto py-6 border-t border-[#333] bg-[#0a0a0a]">
             <div class="container mx-auto px-4">
                 <div class="flex flex-col md:flex-row justify-between items-center text-center md:text-left">
                     <div class="mb-4 md:mb-0">
                         <div class="flex items-center justify-center md:justify-start mb-2">
-                             <svg class="w-6 h-6 mr-2 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
-                            </svg>
+                            <svg class="w-6 h-6 mr-2 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
                             <span class="gradient-text font-bold">LibreTV</span>
                         </div>
-                        <p class="text-gray-500 text-sm mt-1">© 2025 LibreTV - 自由观影，畅享精彩</p>
+                        <p class="text-gray-500 text-sm">© 2025 LibreTV - 自由观影，畅享精彩</p>
                     </div>
-
                     <div class="text-center md:text-right">
-                        <p class="text-gray-500 text-sm max-w-md mb-2">
-                            免责声明：本站仅为视频搜索聚合工具，不存储、上传或分发任何视频内容。
-                            所有视频均来自第三方API接口。如有侵权，请联系相关内容提供方。
-                        </p>
-                        <div class="mt-1 flex justify-center md:justify-end space-x-4">
+                        <p class="text-gray-500 text-sm max-w-md mb-2">免责声明：本站仅为视频搜索聚合工具，不存储、上传或制作任何视频内容...</p>
+                        <div class="flex justify-center md:justify-end space-x-4">
                             <a href="about.html" class="text-gray-400 hover:text-white text-sm transition-colors">关于我们</a>
                             <a href="privacy.html" class="text-gray-400 hover:text-white text-sm transition-colors">隐私政策</a>
                         </div>
@@ -306,46 +252,35 @@
                 </div>
             </div>
         </footer>
-    </div> <!-- End container -->
+    </div>
 
-    <!-- Details Modal (Original structure with new styles) -->
-    <div id="modal" class="fixed inset-0 bg-black/90 hidden flex items-center justify-center p-4 z-50 transition-opacity duration-300">
-        <div class="bg-[#111] p-6 rounded-lg w-11/12 max-w-4xl border border-[#333] max-h-[90vh] flex flex-col shadow-xl">
-             <!-- Modal Header -->
+    <!-- Details Modal (Remains styled) -->
+    <div id="modal" class="fixed inset-0 bg-black/90 hidden items-center justify-center z-50 p-4 transition-opacity duration-300">
+        <div class="bg-[#111] p-6 rounded-lg w-full max-w-4xl border border-[#333] max-h-[90vh] flex flex-col shadow-xl">
             <div class="flex justify-between items-center mb-4 flex-none">
                 <h2 id="modalTitle" class="text-xl md:text-2xl font-bold gradient-text truncate pr-4"></h2>
                 <button onclick="closeModal()" class="text-gray-400 hover:text-white text-3xl transition-colors" aria-label="关闭详情">×</button>
             </div>
-             <!-- Modal Content (Scrollable) -->
             <div id="modalContent" class="overflow-y-auto flex-1 min-h-0 pr-2">
-                 <!-- Episode controls will be added here by JS if needed -->
-                 <div id="episodeControls" class="flex justify-end mb-3 hidden"> <!-- Initially hidden -->
+                 <div id="episodeControls" class="flex justify-end mb-3">
                      <button onclick="toggleEpisodeOrder()" class="px-3 py-1.5 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white text-xs font-semibold rounded-full shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5 flex items-center justify-center space-x-1">
-                         <svg id="episodeOrderIcon" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transition-transform duration-300" viewBox="0 0 20 20" fill="currentColor">
-                             <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v3.586L7.707 9.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 10.586V7z" clip-rule="evenodd" />
-                         </svg>
-                         <span id="episodeOrderText">倒序</span>
-                     </button>
-                 </div>
-                 <!-- Episodes Grid -->
-                 <div id="episodesGrid" class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2">
-                     <!-- Episodes will be rendered here by JS -->
-                 </div>
-                  <!-- No Episodes Message Placeholder -->
-                 <div id="noEpisodesMessage" class="hidden text-center text-gray-400 py-8">
-                     没有找到可播放的视频源
-                 </div>
+                        <svg id="episodeOrderIcon" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transition-transform duration-300" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v3.586L7.707 9.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 10.586V7z" clip-rule="evenodd" /></svg>
+                        <span id="episodeOrderText">倒序</span>
+                    </button>
+                </div>
+                <div id="episodesGrid" class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2"></div>
+                <div id="noEpisodesMessage" class="hidden text-center text-gray-400 py-8">没有找到可播放的视频源</div>
             </div>
         </div>
     </div>
 
-    <!-- Toast Notification -->
+    <!-- Toast Notification (Remains styled) -->
     <div id="toast" class="fixed top-4 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded-lg shadow-lg text-white z-[70] transition-all duration-300 opacity-0 -translate-y-full" role="alert">
         <p id="toastMessage"></p>
     </div>
 
-    <!-- Loading Indicator -->
-    <div id="loading" class="fixed inset-0 bg-black/70 hidden items-center justify-center z-[60]"> <!-- Higher z-index than modal -->
+    <!-- Loading Indicator (Remains styled) -->
+    <div id="loading" class="fixed inset-0 bg-black/70 hidden items-center justify-center z-[60]">
         <div class="bg-[#111] p-6 rounded-lg border border-[#333] flex items-center space-x-4 shadow-lg">
             <div class="w-8 h-8 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
             <p id="loadingMessage" class="text-white text-lg">加载中...</p>
@@ -371,11 +306,10 @@
     }
     </script>
 
-    <!-- JavaScript Files -->
-    <!-- Placed at the end for better performance -->
+    <!-- JavaScript Files (Remain at the end) -->
     <script src="js/config.js"></script>
     <script src="js/ui.js"></script>
-    <script src="js/api.js"></script> <!-- If api.js exists and is separate -->
+    <script src="js/api.js"></script> <!-- If api logic is separate -->
     <script src="js/app.js"></script>
 
 </body>
