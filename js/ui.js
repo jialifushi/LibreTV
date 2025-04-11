@@ -204,10 +204,21 @@ function renderSearchHistory() {
             tag.title = `搜索于: ${date.toLocaleString()}`;
         }
         
-        tag.onclick = function() {
-            document.getElementById('searchInput').value = item.text;
-            search();
-        };
+        // 修改：绑定事件监听器，避免直接调用未定义的 search
+        tag.addEventListener('click', function() {
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) {
+                searchInput.value = item.text;
+                // 假设 app.js 已将 search 暴露为全局函数 window.search
+                if (typeof window.search === 'function') {
+                    window.search();
+                } else {
+                    console.error('search 函数未定义，请检查 app.js');
+                    showToast('搜索功能不可用，请稍后重试', 'error');
+                }
+            }
+        });
+        
         historyContainer.appendChild(tag);
     });
 }
@@ -468,26 +479,4 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// 其他函数
-function toggleSettings(e) {
-    e && e.stopPropagation();
-    const panel = document.getElementById('settingsPanel');
-    panel.classList.toggle('show');
-}
-
-function showToast(message, type = 'error') {
-    const toast = document.getElementById('toast');
-    const toastMessage = document.getElementById('toastMessage');
-    const bgColors = { 'error': 'bg-red-500', 'success': 'bg-green-500', 'info': 'bg-blue-500', 'warning': 'bg-yellow-500' };
-    toast.className = `fixed top-4 left-1/2 -translate-x-1/2 px-6 py-3 rounded-lg shadow-lg transform transition-all duration-300 ${bgColors[type] || bgColors.error} text-white`;
-    toastMessage.textContent = message;
-    toast.style.opacity = '1';
-    toast.style.transform = 'translateX(-50%) translateY(0)';
-    setTimeout(() => {
-        toast.style.opacity = '0';
-        toast.style.transform = 'translateX(-50%) translateY(-100%)';
-    }, 3000);
-}
-
-
-
+// 注意：以下重复定义的 toggleSettings 和 showToast 已移除，它们已在前面定义
