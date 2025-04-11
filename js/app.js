@@ -33,29 +33,17 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // 设置 select 的默认选中值
-    const apiSourceSelect = document.getElementById('apiSource');
-    if (apiSourceSelect) {
-        apiSourceSelect.value = currentApiSource;
-    } else {
-        console.error("apiSource 元素未找到");
-    }
+    document.getElementById('apiSource').value = currentApiSource;
+
 
     // 初始化显示当前站点代码
-    let currentCodeElement = document.getElementById('currentCode'); // 使用 let 避免重复声明
-    if (currentCodeElement) {
-        currentCodeElement.textContent = currentApiSource || '未设置';
-    } else {
-        console.error("currentCode 元素未找到");
-    }
+    document.getElementById('currentCode').textContent = currentApiSource;
+
     
     // 初始化显示当前站点状态
-    const siteStatusElement = document.getElementById('siteStatus');
-    if (siteStatusElement) {
-        siteStatusElement.innerHTML = '<span class="text-gray-500">●</span> 初始化中...';
+
         updateSiteStatusWithTest(currentApiSource);
-    } else {
-        console.error("siteStatus 元素未找到");
-    }
+
     
     // 渲染搜索历史
     renderSearchHistory();
