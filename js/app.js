@@ -26,12 +26,10 @@ function parseCustomApiUrls() {
 document.addEventListener('DOMContentLoaded', function() {
     // 初始化时检查是否使用自定义接口
     if (currentApiSource === 'custom') {
-        const customApiInput = document.getElementById('customApiInput');
-        if (customApiInput) {
-            customApiInput.classList.remove('hidden');
+        document.getElementById('customApiInput').classList.remove('hidden');
             document.getElementById('customApiUrl').value = customApiUrl;
             customApiUrls = parseCustomApiUrls();
-        }
+
     }
 
     // 设置 select 的默认选中值
@@ -80,15 +78,14 @@ document.addEventListener('DOMContentLoaded', function() {
 // 带有超时和缓存的站点可用性测试
 async function updateSiteStatusWithTest(source) {
     // 显示加载状态
-    const siteStatus = document.getElementById('siteStatus');
-    if (siteStatus) siteStatus.innerHTML = '<span class="text-gray-500">●</span> 测试中...';
+    document.getElementById('siteStatus').innerHTML = '<span class="text-gray-500">●</span> 测试中...';
     
     // 自定义API源特殊处理 - 测试所有提供的API
     if (source === 'custom') {
         const urls = parseCustomApiUrls();
         if (urls.length === 0) {
             updateSiteStatus(false);
-            if (siteStatus) siteStatus.innerHTML = '<span class="text-gray-500">●</span> 未设置API';
+            document.getElementById('siteStatus').innerHTML = '<span class="text-gray-500">●</span> 未设置API';
             return;
         }
         
@@ -100,11 +97,11 @@ async function updateSiteStatusWithTest(source) {
         const availableCount = results.filter(r => r).length;
         if (availableCount > 0) {
             updateSiteStatus(true);
-            if (siteStatus) siteStatus.innerHTML = 
+            document.getElementById('siteStatus').innerHTML = 
                 `<span class="text-green-500">●</span> ${availableCount}/${urls.length} 可用`;
         } else {
             updateSiteStatus(false);
-            if (siteStatus) siteStatus.innerHTML = 
+            document.getElementById('siteStatus').innerHTML = 
                 `<span class="text-red-500">●</span> 全部不可用`;
         }
         return;
@@ -210,33 +207,27 @@ async function testCustomApiUrl(url) {
 // 设置事件监听器
 function setupEventListeners() {
     // API源选择变更事件
-    const apiSource = document.getElementById('apiSource');
-    if (apiSource) {
-        apiSource.addEventListener('change', async function(e) {
+    document.getElementById('apiSource').addEventListener('change', async function(e) {
             currentApiSource = e.target.value;
             const customApiInput = document.getElementById('customApiInput');
             
             if (currentApiSource === 'custom') {
-                customApiInput?.classList.remove('hidden');
+                customApiInput.classList.remove('hidden');
                 customApiUrl = document.getElementById('customApiUrl').value;
                 localStorage.setItem('customApiUrl', customApiUrl);
                 customApiUrls = parseCustomApiUrls();
                 // 自定义接口不立即测试可用性
                 document.getElementById('siteStatus').innerHTML = '<span class="text-gray-500">●</span> 待测试';
             } else {
-                customApiInput?.classList.add('hidden');
+                customApiInput.classList.add('hidden');
                 // 非自定义接口立即测试可用性
                 showToast('正在测试站点可用性...', 'info');
                 updateSiteStatusWithTest(currentApiSource);
             }
             
             localStorage.setItem('currentApiSource', currentApiSource);
-            const currentCodeElement = document.getElementById('currentCode');
-            if (currentCodeElement) {
-                currentCodeElement.textContent = currentApiSource;
-            } else {
-                console.error("currentCode 元素未找到");
-            }
+        document.getElementById('currentCode').textContent = currentApiSource;
+
             
             // 清理搜索结果并重置搜索区域
             resetSearchArea();
@@ -244,9 +235,7 @@ function setupEventListeners() {
     }
 
     // 自定义接口输入框事件 - 更新为支持多个API
-    const customApiUrlInput = document.getElementById('customApiUrl');
-    if (customApiUrlInput) {
-        customApiUrlInput.addEventListener('blur', async function(e) {
+    document.getElementById('customApiUrl').addEventListener('blur', async function(e) {
             customApiUrl = e.target.value;
             localStorage.setItem('customApiUrl', customApiUrl);
             
