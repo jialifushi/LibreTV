@@ -64,7 +64,7 @@ function showSettingsPasswordModal() {
 }
 
 // ==================== 修改：toggleSettings 函数（添加第二重密码验证）====================
-async function toggleSettings(e) {
+async function toggleSettings(e, isRetry = false) {
     // 阻止事件冒泡
     e && e.stopPropagation();
 
@@ -77,23 +77,28 @@ async function toggleSettings(e) {
     }
 
     // --- 第一道门：执行原有的全局密码保护检查 ---
-    try {
-        if (window.ensurePasswordProtection) {
+    // isRetry=true表示这是密码验证成功后的自动重试，直接跳过第一道门
+    if (!isRetry && window.ensurePasswordProtection) {
+        try {
             window.ensurePasswordProtection();
-        } else { // 兼容旧版逻辑
-            if (window.isPasswordProtected && !window.isPasswordVerified()) {
-                showPasswordModal && showPasswordModal();
-                return;
-            }
+        } catch (error) {
+            // 捕获到错误，意味着需要密码验证，此时密码弹窗已由ensurePasswordProtection显示。
+            // 我们在这里设置一个一次性事件监听器，等待验证成功后再次调用自己。
+            console.warn('Global password protection check failed, waiting for verification...');
+            
+            document.addEventListener('passwordVerified', function onPasswordVerified() {
+                // 监听到密码验证成功后，再次触发toggleSettings，并传入isRetry=true标记
+                toggleSettings(e, true);
+            }, { once: true }); // 使用 { once: true } 确保监听器只执行一次后自动移除
+
+            // 函数在此处终止，等待用户输入密码
+            return;
         }
-    } catch (error) {
-        // 如果全局密码验证失败 (ensurePasswordProtection会抛出错误)，函数会在此处停止。
-        // 全局密码的弹窗会由它自己处理，我们无需干预。
-        console.warn('Global password protection check failed:', error.message);
-        return;
     }
 
+
     // --- 第二道门：使用新的自定义模态框进行验证 ---
+    // 如果能执行到这里，说明第一道门已经通过（或被跳过）
     const settingsPassword = await showSettingsPasswordModal();
 
     // 如果用户点击了取消
