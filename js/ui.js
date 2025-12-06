@@ -813,11 +813,11 @@ function clearViewingHistory() {
 
 // 更新toggleSettings函数以处理历史面板互动
 const originalToggleSettings = toggleSettings;
-toggleSettings = function(e) {
+toggleSettings = async function(e) {
     if (e) e.stopPropagation();
 
     // 原始设置面板切换逻辑
-    originalToggleSettings(e);
+    await originalToggleSettings(e);
 
     // 如果历史记录面板是打开的，则关闭它
     const historyPanel = document.getElementById('historyPanel');
