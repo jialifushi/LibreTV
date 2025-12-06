@@ -1,4 +1,60 @@
 // UI相关函数
+// UI相关函数
+function showSettingsPasswordModal() {
+    return new Promise((resolve) => {
+        // 检查并移除已存在的模态框，防止重复
+        let existingModal = document.getElementById('settingsPasswordModal');
+        if (existingModal) {
+            existingModal.remove();
+        }
+
+        // 创建模态框的HTML结构
+        const modal = document.createElement('div');
+        modal.id = 'settingsPasswordModal';
+        modal.className = 'fixed inset-0 bg-black/80 flex items-center justify-center z-[70]'; // 使用高z-index确保在最前
+        modal.innerHTML = `
+            <div class="bg-[#111] p-8 rounded-lg w-11/12 max-w-sm border border-[#333]">
+                <h2 class="text-xl font-bold gradient-text mb-4">设置访问权限</h2>
+                <p class="text-gray-300 mb-4">请输入设置密码以继续</p>
+                <input type="password" id="settingsPasswordInput" class="w-full bg-[#222] border border-[#333] text-white px-4 py-3 rounded-lg focus:outline-none focus:border-white transition-colors" placeholder="设置密码...">
+                <div class="mt-6 flex justify-end space-x-4">
+                    <button id="cancelSettingsPassword" class="px-4 py-2 bg-[#444] hover:bg-[#555] text-white rounded-lg">取消</button>
+                    <button id="submitSettingsPassword" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg">确认</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(modal);
+        
+        const input = document.getElementById('settingsPasswordInput');
+        input.focus();
+
+        // 定义关闭模态框并返回null的函数
+        const closeModal = () => {
+            modal.remove();
+            resolve(null); // 用户取消时返回null
+        };
+
+        // 定义提交密码的函数
+        const submit = () => {
+            const password = input.value;
+            modal.remove();
+            resolve(password);
+        };
+
+        // 绑定事件
+        document.getElementById('cancelSettingsPassword').onclick = closeModal;
+        document.getElementById('submitSettingsPassword').onclick = submit;
+        input.onkeydown = (e) => {
+            if (e.key === 'Enter') {
+                submit();
+            } else if (e.key === 'Escape') {
+                closeModal();
+            }
+        };
+    });
+}
+
+
 async function toggleSettings(e) {
     // 阻止事件冒泡
     e && e.stopPropagation();
@@ -28,20 +84,17 @@ async function toggleSettings(e) {
         return;
     }
 
-    // --- 第二道门：执行新增的“设置密码”验证 ---
-    // 只有在通过第一道门后，代码才会执行到这里。
+    // --- 第二道门：使用新的自定义模态框进行验证 ---
+    const settingsPassword = await showSettingsPasswordModal();
 
-    // 使用 prompt 请求“设置密码”
-    const settingsPassword = prompt("请输入设置密码:");
-
-    // 如果用户取消或未输入
-    if (settingsPassword === null || settingsPassword === "") {
+    // 如果用户点击了取消
+    if (settingsPassword === null) {
         return;
     }
-
+    
     // 您提供的"aihezhuang"的哈希值
     const correctHash = 'a39450f0f54af43adefcd432f5460323ea7657dacf93d9476f3ab6f604dde49c';
-
+    
     // 计算输入密码的哈希值
     const inputHash = await sha256(settingsPassword);
 
@@ -52,8 +105,10 @@ async function toggleSettings(e) {
             panel.classList.toggle('show');
         }
     } else {
-        // 密码错误
-        alert("设置密码错误！");
+        // 只有在用户确实输入了内容时才提示错误
+        if (settingsPassword !== "") {
+            alert("设置密码错误！");
+        }
     }
 }
 
