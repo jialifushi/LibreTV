@@ -1,5 +1,14 @@
 // UI相关函数
-// UI相关函数
+
+// ==================== 新增：SHA-256 哈希函数 ====================
+async function sha256(message) {
+    const msgBuffer = new TextEncoder().encode(message);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+// ==================== 新增：设置密码弹窗 ====================
 function showSettingsPasswordModal() {
     return new Promise((resolve) => {
         // 检查并移除已存在的模态框，防止重复
@@ -54,7 +63,7 @@ function showSettingsPasswordModal() {
     });
 }
 
-
+// ==================== 修改：toggleSettings 函数（添加第二重密码验证）====================
 async function toggleSettings(e) {
     // 阻止事件冒泡
     e && e.stopPropagation();
@@ -865,21 +874,6 @@ function clearViewingHistory() {
         showToast('清除观看历史失败', 'error');
     }
 }
-
-// 更新toggleSettings函数以处理历史面板互动
-const originalToggleSettings = toggleSettings;
-toggleSettings = async function(e) {
-    if (e) e.stopPropagation();
-
-    // 原始设置面板切换逻辑
-    await originalToggleSettings(e);
-
-    // 如果历史记录面板是打开的，则关闭它
-    const historyPanel = document.getElementById('historyPanel');
-    if (historyPanel && historyPanel.classList.contains('show')) {
-        historyPanel.classList.remove('show');
-    }
-};
 
 // 点击外部关闭历史面板
 document.addEventListener('DOMContentLoaded', function() {
