@@ -1,26 +1,60 @@
 // UI相关函数
-function toggleSettings(e) {
-    // 强化的密码保护校验 - 防止绕过
+async function toggleSettings(e) {
+    // 阻止事件冒泡
+    e && e.stopPropagation();
+
+    const panel = document.getElementById('settingsPanel');
+    
+    // 如果面板当前是打开的，直接关闭它（无需密码验证）
+    if (panel && panel.classList.contains('show')) {
+        panel.classList.remove('show');
+        return;
+    }
+
+    // --- 第一道门：执行原有的全局密码保护检查 ---
     try {
         if (window.ensurePasswordProtection) {
             window.ensurePasswordProtection();
-        } else {
-            // 兼容性检查
-            if (window.isPasswordProtected && window.isPasswordVerified) {
-                if (window.isPasswordProtected() && !window.isPasswordVerified()) {
-                    showPasswordModal && showPasswordModal();
-                    return;
-                }
+        } else { // 兼容旧版逻辑
+            if (window.isPasswordProtected && !window.isPasswordVerified()) {
+                showPasswordModal && showPasswordModal();
+                return;
             }
         }
     } catch (error) {
-        console.warn('Password protection check failed:', error.message);
+        // 如果全局密码验证失败 (ensurePasswordProtection会抛出错误)，函数会在此处停止。
+        // 全局密码的弹窗会由它自己处理，我们无需干预。
+        console.warn('Global password protection check failed:', error.message);
         return;
     }
-    // 阻止事件冒泡，防止触发document的点击事件
-    e && e.stopPropagation();
-    const panel = document.getElementById('settingsPanel');
-    panel.classList.toggle('show');
+
+    // --- 第二道门：执行新增的“设置密码”验证 ---
+    // 只有在通过第一道门后，代码才会执行到这里。
+
+    // 使用 prompt 请求“设置密码”
+    const settingsPassword = prompt("请输入设置密码:");
+
+    // 如果用户取消或未输入
+    if (settingsPassword === null || settingsPassword === "") {
+        return;
+    }
+
+    // 您提供的"aihezhuang"的哈希值
+    const correctHash = 'a39450f0f54af43adefcd432f5460323ea7657dacf93d9476f3ab6f604dde49c';
+
+    // 计算输入密码的哈希值
+    const inputHash = await sha256(settingsPassword);
+
+    // 比较哈希值
+    if (inputHash === correctHash) {
+        // 密码正确，打开设置面板
+        if (panel) {
+            panel.classList.toggle('show');
+        }
+    } else {
+        // 密码错误
+        alert("设置密码错误！");
+    }
 }
 
 // 改进的Toast显示函数 - 支持队列显示多个Toast
