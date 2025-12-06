@@ -1,123 +1,26 @@
-import { sha256 } from './sha256.js';
-
 // UI相关函数
-
-// ==================== 新增：设置密码弹窗 ====================
-function showSettingsPasswordModal() {
-    return new Promise((resolve) => {
-        // 检查并移除已存在的模态框，防止重复
-        let existingModal = document.getElementById('settingsPasswordModal');
-        if (existingModal) {
-            existingModal.remove();
-        }
-
-        // 创建模态框的HTML结构
-        const modal = document.createElement('div');
-        modal.id = 'settingsPasswordModal';
-        modal.className = 'fixed inset-0 bg-black/80 flex items-center justify-center z-[70]'; // 使用高z-index确保在最前
-        modal.innerHTML = `
-            <div class="bg-[#111] p-8 rounded-lg w-11/12 max-w-sm border border-[#333]">
-                <h2 class="text-xl font-bold gradient-text mb-4">设置访问权限</h2>
-                <p class="text-gray-300 mb-4">请输入设置密码以继续</p>
-                <input type="password" id="settingsPasswordInput" class="w-full bg-[#222] border border-[#333] text-white px-4 py-3 rounded-lg focus:outline-none focus:border-white transition-colors" placeholder="设置密码...">
-                <div class="mt-6 flex justify-end space-x-4">
-                    <button id="cancelSettingsPassword" class="px-4 py-2 bg-[#444] hover:bg-[#555] text-white rounded-lg">取消</button>
-                    <button id="submitSettingsPassword" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg">确认</button>
-                </div>
-            </div>
-        `;
-        document.body.appendChild(modal);
-        
-        const input = document.getElementById('settingsPasswordInput');
-        input.focus();
-
-        // 定义关闭模态框并返回null的函数
-        const closeModal = () => {
-            modal.remove();
-            resolve(null); // 用户取消时返回null
-        };
-
-        // 定义提交密码的函数
-        const submit = () => {
-            const password = input.value;
-            modal.remove();
-            resolve(password);
-        };
-
-        // 绑定事件
-        document.getElementById('cancelSettingsPassword').onclick = closeModal;
-        document.getElementById('submitSettingsPassword').onclick = submit;
-        input.onkeydown = (e) => {
-            if (e.key === 'Enter') {
-                submit();
-            } else if (e.key === 'Escape') {
-                closeModal();
-            }
-        };
-    });
-}
-
-// ==================== 修改：toggleSettings 函数（添加第二重密码验证）====================
-async function toggleSettings(e, isRetry = false) {
-    // 阻止事件冒泡
-    e && e.stopPropagation();
-
-    const panel = document.getElementById('settingsPanel');
-    
-    // 如果面板当前是打开的，直接关闭它（无需密码验证）
-    if (panel && panel.classList.contains('show')) {
-        panel.classList.remove('show');
-        return;
-    }
-
-    // --- 第一道门：执行原有的全局密码保护检查 ---
-    // isRetry=true表示这是密码验证成功后的自动重试，直接跳过第一道门
-    if (!isRetry && window.ensurePasswordProtection) {
-        try {
+function toggleSettings(e) {
+    // 强化的密码保护校验 - 防止绕过
+    try {
+        if (window.ensurePasswordProtection) {
             window.ensurePasswordProtection();
-        } catch (error) {
-            // 捕获到错误，意味着需要密码验证，此时密码弹窗已由ensurePasswordProtection显示。
-            // 我们在这里设置一个一次性事件监听器，等待验证成功后再次调用自己。
-            console.warn('Global password protection check failed, waiting for verification...');
-            
-            document.addEventListener('passwordVerified', function onPasswordVerified() {
-                // 监听到密码验证成功后，再次触发toggleSettings，并传入isRetry=true标记
-                toggleSettings(e, true);
-            }, { once: true }); // 使用 { once: true } 确保监听器只执行一次后自动移除
-
-            // 函数在此处终止，等待用户输入密码
-            return;
+        } else {
+            // 兼容性检查
+            if (window.isPasswordProtected && window.isPasswordVerified) {
+                if (window.isPasswordProtected() && !window.isPasswordVerified()) {
+                    showPasswordModal && showPasswordModal();
+                    return;
+                }
+            }
         }
-    }
-
-
-    // --- 第二道门：使用新的自定义模态框进行验证 ---
-    // 如果能执行到这里，说明第一道门已经通过（或被跳过）
-    const settingsPassword = await showSettingsPasswordModal();
-
-    // 如果用户点击了取消
-    if (settingsPassword === null) {
+    } catch (error) {
+        console.warn('Password protection check failed:', error.message);
         return;
     }
-    
-    // 您提供的"aihezhuang"的哈希值
-    const correctHash = 'a39450f0f54af43adefcd432f5460323ea7657dacf93d9476f3ab6f604dde49c';
-    
-    // 计算输入密码的哈希值
-    const inputHash = await sha256(settingsPassword);
-
-    // 比较哈希值
-    if (inputHash === correctHash) {
-        // 密码正确，打开设置面板
-        if (panel) {
-            panel.classList.toggle('show');
-        }
-    } else {
-        // 只有在用户确实输入了内容时才提示错误
-        if (settingsPassword !== "") {
-            alert("设置密码错误！");
-        }
-    }
+    // 阻止事件冒泡，防止触发document的点击事件
+    e && e.stopPropagation();
+    const panel = document.getElementById('settingsPanel');
+    panel.classList.toggle('show');
 }
 
 // 改进的Toast显示函数 - 支持队列显示多个Toast
@@ -874,6 +777,21 @@ function clearViewingHistory() {
     }
 }
 
+// 更新toggleSettings函数以处理历史面板互动
+const originalToggleSettings = toggleSettings;
+toggleSettings = function(e) {
+    if (e) e.stopPropagation();
+
+    // 原始设置面板切换逻辑
+    originalToggleSettings(e);
+
+    // 如果历史记录面板是打开的，则关闭它
+    const historyPanel = document.getElementById('historyPanel');
+    if (historyPanel && historyPanel.classList.contains('show')) {
+        historyPanel.classList.remove('show');
+    }
+};
+
 // 点击外部关闭历史面板
 document.addEventListener('DOMContentLoaded', function() {
     document.addEventListener('click', function(e) {
@@ -1051,14 +969,7 @@ function showImportBox(fun) {
         fun(e.dataTransfer.files[0]);
     });
 
-        fileInput.addEventListener('change', (e) => {
-
-            fun(fileInput.files[0]);
-
-        });
-
-    }
-
-    window.toggleSettings = toggleSettings;
-
-    
+    fileInput.addEventListener('change', (e) => {
+        fun(fileInput.files[0]);
+    });
+}
