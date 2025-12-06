@@ -1,12 +1,6 @@
-// UI相关函数
+import { sha256 } from './sha256.js';
 
-// ==================== 新增：SHA-256 哈希函数 ====================
-async function sha256(message) {
-    const msgBuffer = new TextEncoder().encode(message);
-    const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
-    const hashArray = Array.from(new Uint8Array(hashBuffer));
-    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-}
+// UI相关函数
 
 // ==================== 新增：设置密码弹窗 ====================
 function showSettingsPasswordModal() {
@@ -1057,7 +1051,14 @@ function showImportBox(fun) {
         fun(e.dataTransfer.files[0]);
     });
 
-    fileInput.addEventListener('change', (e) => {
-        fun(fileInput.files[0]);
-    });
-}
+        fileInput.addEventListener('change', (e) => {
+
+            fun(fileInput.files[0]);
+
+        });
+
+    }
+
+    window.toggleSettings = toggleSettings;
+
+    
